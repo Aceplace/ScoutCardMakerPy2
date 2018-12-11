@@ -151,10 +151,7 @@ if __name__ == '__main__':
     import formation
     import adapters
     formation = formation.Formation()
-    visualizer_formation = adapters.formation_variation_to_visualizer_formation(
-        formation,
-        formation.variations['boundary']
-    )
+    visualizer_formation = adapters.variation_to_visualizer(formation, formation.variations['boundary'])
     def callback(tag, x, y):
         print(f'{tag}: {x}, {y}')
 

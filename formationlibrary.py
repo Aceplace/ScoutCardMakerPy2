@@ -49,9 +49,8 @@ class FormationLibrary:
     def get_formation(self, formation_name):
         try:
             formation = copy.deepcopy(self.formations[formation_name])
-            del self.formations[formation_name]
         except KeyError:
-            raise LibraryException(f'{formation_to_delete} not in formations.')
+            raise LibraryException(f'{formation_name} not in formations.')
 
         return formation
 

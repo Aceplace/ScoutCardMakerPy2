@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-def formation_variation_to_visualizer_formation(formation, variation):
+def variation_to_visualizer(formation, variation):
     VisualizerPlayer = namedtuple('VisualizerPlayer', 'tag label x y')
     visualizer_players = []
     for player in formation.players.values():
