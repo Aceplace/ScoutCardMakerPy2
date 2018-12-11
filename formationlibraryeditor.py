@@ -38,7 +38,13 @@ class FormationLibraryEditor(tk.Frame):
         override_checkboxes_frame = tk.Frame(self)
         override_checkboxes_frame.grid(row=0, column=1, stick='w')
         tk.Label(override_checkboxes_frame, text='Affected Players').pack(anchor='w')
-        self.t_cb_value = tk.BooleanVar()
+        self.affected_players_cb_values = {}
+        for player_tag in ['t','h','x','y','z','q']:
+            self.affected_players_cb_values[player_tag] = tk.BooleanVar()
+            tk.Checkbutton(override_checkboxes_frame,
+                           text=player_tag.upper(),
+                           variable=self.affected_players_cb_values[player_tag]).pack(anchor='w')
+        """self.t_cb_value = tk.BooleanVar()
         self.t_cb = tk.Checkbutton(override_checkboxes_frame, text='T', variable=self.t_cb_value)
         self.t_cb.pack(anchor='w')
         self.h_cb_value = tk.BooleanVar()
@@ -55,7 +61,7 @@ class FormationLibraryEditor(tk.Frame):
         self.z_cb.pack(anchor='w')
         self.q_cb_value = tk.BooleanVar()
         self.q_cb = tk.Checkbutton(override_checkboxes_frame, text='Q', variable=self.q_cb_value)
-        self.q_cb.pack(anchor='w')
+        self.q_cb.pack(anchor='w')"""
 
 
         # Widget for library
@@ -76,7 +82,7 @@ class FormationLibraryEditor(tk.Frame):
         visualizer_nb.grid(row=1, column=1, sticky='NSEW')
 
         self.visual_editors = {}
-        for variation in ['mof', 'field', 'boundary']:
+        for variation in ['mof', 'field', 'boundary', 'composite']:
             visualizer_formation = adapters.variation_to_visualizer(self.current_formation,
                                                                     self.current_formation.variations[variation])
             self.visual_editors[variation] = FormationVisualizer(visualizer_nb,
@@ -95,12 +101,14 @@ class FormationLibraryEditor(tk.Frame):
             self.formation_name_entry.delete(0,tk.END)
             self.formation_name_entry.insert(0,listbox.get(index))
             self.current_formation = self.library.get_formation(listbox.get(index))
-            self.t_cb_value.set(True if 't' in self.current_formation.affected_player_tags else False)
+            for tag, cb_value in self.affected_players_cb_values.items():
+                cb_value.set(True if tag in self.current_formation.affected_player_tags else False)
+            """self.t_cb_value.set(True if 't' in self.current_formation.affected_player_tags else False)
             self.h_cb_value.set(True if 'h' in self.current_formation.affected_player_tags else False)
             self.x_cb_value.set(True if 'x' in self.current_formation.affected_player_tags else False)
             self.y_cb_value.set(True if 'y' in self.current_formation.affected_player_tags else False)
             self.z_cb_value.set(True if 'z' in self.current_formation.affected_player_tags else False)
-            self.q_cb_value.set(True if 'q' in self.current_formation.affected_player_tags else False)
+            self.q_cb_value.set(True if 'q' in self.current_formation.affected_player_tags else False)"""
             for variation in ['mof', 'field', 'boundary']:
                 visualizer_formation = adapters.variation_to_visualizer(self.current_formation,
                                                                         self.current_formation.variations[variation])
@@ -108,7 +116,9 @@ class FormationLibraryEditor(tk.Frame):
 
     def save_formation(self, *args):
         try:
-            affected_player_tags = []
+            affected_player_tags = [tag for tag, cb_value in self.affected_players_cb_values.items() if cb_value.get()]
+            """for tag, cb_value in self.affected_players_cb_values.items():
+                cb_value.set(True if tag in self.current_formation.affected_player_tags else False)
             if self.t_cb_value.get():
                 affected_player_tags.append('t')
             if self.h_cb_value.get():
@@ -120,7 +130,7 @@ class FormationLibraryEditor(tk.Frame):
             if self.z_cb_value.get():
                 affected_player_tags.append('z')
             if self.q_cb_value.get():
-                affected_player_tags.append('q')
+                affected_player_tags.append('q')"""
 
             self.current_formation.affected_player_tags = affected_player_tags
             self.library.add_formation_to_library(self.formation_name_entry.get(), self.current_formation)
@@ -157,8 +167,9 @@ class FormationLibraryEditor(tk.Frame):
         self.refresh_library_listbox()
 
     def update_player_position(self, variation, tag, x, y):
-        self.current_formation.variations[variation].players[tag]['x'] = x
-        self.current_formation.variations[variation].players[tag]['y'] = y
+        if variation != 'composite':
+            self.current_formation.variations[variation].players[tag]['x'] = x
+            self.current_formation.variations[variation].players[tag]['y'] = y
 
 
 
@@ -166,12 +177,6 @@ class FormationLibraryEditor(tk.Frame):
 if __name__ == '__main__':
     root = tk.Tk()
 
-    nb = ttk.Notebook(root)
-    #nb.pack(fill=tk.BOTH, expand=True)
-    frame = tk.Frame(nb)
-    tk.Button(frame, text='press').pack()
-    frame.pack()
-    nb.add(frame, text='Blah')
     FormationLibraryEditor(root).pack(fill=tk.BOTH, expand=True)
 
     root.mainloop()

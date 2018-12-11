@@ -9,6 +9,10 @@ class FormationLibrary:
         self.formations = {}
 
     def add_formation_to_library(self, formation_name, formation):
+        if not formation_name:
+            raise LibraryException(
+                'Don\'t include a direction with formation name (direction is implicitly to the right.')
+
         formation_words = formation_name.upper().split()
 
         if any(direction in formation_words for direction in ['LT', 'LEFT', 'RT', 'RIGHT']):
