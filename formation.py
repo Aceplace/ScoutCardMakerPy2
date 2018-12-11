@@ -84,6 +84,6 @@ def get_default_variation(type):
         variation.players['h'] = {'x': 18, 'y': 5}
         variation.players['x'] = {'x': -18, 'y': 1}
         variation.players['y'] = {'x': 30, 'y': 1}
-        variation.players['z'] = {'x': 18, 'y': 2}
+        variation.players['z'] = {'x': 35, 'y': 2}
         variation.players['q'] = {'x': 18, 'y': 2}
     return variation
