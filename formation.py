@@ -28,6 +28,8 @@ class Formation:
             'boundary': get_default_variation('boundary')
         }
 
+
+
 class FormationVariation:
     def __init__(self):
         self.players = {}
@@ -40,10 +42,11 @@ class FormationVariation:
             self.players[tag].x = override_variation.players[tag].x
             self.players[tag].y = override_variation.players[tag].y
 
-    def flip_formation(self):
-        for tag, player in self.players.items():
-            if tag not in ['lt', 'lg', 'c', 'rg', 'rt']:
-                player.x *= -1
+    def flip(self):
+        for player in self.players.values():
+            player.x *= -1
+        self.players['lt'].x, self.players['rt'].x = self.players['rt'].x, self.players['lt'].x
+        self.players['lg'].x, self.players['rg'].x = self.players['rg'].x, self.players['lg'].x
 
 def get_default_variation(type):
     variation = FormationVariation()
