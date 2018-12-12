@@ -11,7 +11,7 @@ class FormationLibrary:
     def add_formation_to_library(self, formation_name, formation):
         if not formation_name:
             raise LibraryException(
-                'Don\'t include a direction with formation name (direction is implicitly to the right.')
+                'Empty formation name not allowed.')
 
         formation_words = formation_name.upper().split()
 
@@ -82,20 +82,44 @@ class FormationLibrary:
 
         formation_name = reg_ex.sub('', formation_name)
         formation_words = formation_name.split()
+        first_index = 0
+        last_index = len(formation_words) - 1
+
+        #Pro trips c gun
+        formation_variation = get_default_variation(variation_type)
+        still_looking_for_match = False
+        while first_index <= last_index:
+            sub_formation_name = ' '.join(formation_words[first_index:last_index + 1])
+            if sub_formation_name in self.formations:
+                formation_variation.override_player_positions(
+                    self.formations[sub_formation_name].variations[variation_type],
+                    self.formations[sub_formation_name].affected_player_tags
+                )
+                first_index = last_index + 1
+                last_index = len(formation_words) - 1
+                still_looking_for_match = False
+            else:
+                still_looking_for_match = True
+                last_index -= 1
+
+        if still_looking_for_match:
+            raise LibraryException(sub_formation_name + ' doesn\'t exist in library. Create it.')
+
 
         #check that all sub_formations exist and create a composite variation from them
-        sub_formation = ''
+        """sub_formation_name = ''
         formation_variation = get_default_variation(variation_type)
         for word in formation_words:
-            sub_formation = word if sub_formation == '' else sub_formation + ' ' + word
-            if sub_formation in self.formations:
-                formation_variation.override_formation(
-                    self.formations[sub_formation].variations[variation_type]
+            sub_formation_name = word if sub_formation_name == '' else sub_formation_name + ' ' + word
+            if sub_formation_name in self.formations:
+                formation_variation.override_player_positions(
+                    self.formations[sub_formation_name].variations[variation_type],
+                    self.formations[sub_formation_name].affected_player_tags
                 )
-                sub_formation = ''
+                sub_formation_name = ''
 
-        if sub_formation != '':
-            raise LibraryException(sub_formation + ' doesn\'t exist in library. Create it.')
+        if sub_formation_name != '':
+            raise LibraryException(sub_formation_name + ' doesn\'t exist in library. Create it.')"""
 
         if direction == 'LT':
             formation_variation.flip()

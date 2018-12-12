@@ -44,24 +44,6 @@ class FormationLibraryEditor(tk.Frame):
             tk.Checkbutton(override_checkboxes_frame,
                            text=player_tag.upper(),
                            variable=self.affected_players_cb_values[player_tag]).pack(anchor='w')
-        """self.t_cb_value = tk.BooleanVar()
-        self.t_cb = tk.Checkbutton(override_checkboxes_frame, text='T', variable=self.t_cb_value)
-        self.t_cb.pack(anchor='w')
-        self.h_cb_value = tk.BooleanVar()
-        self.h_cb = tk.Checkbutton(override_checkboxes_frame, text='H', variable=self.h_cb_value)
-        self.h_cb.pack(anchor='w')
-        self.x_cb_value = tk.BooleanVar()
-        self.x_cb = tk.Checkbutton(override_checkboxes_frame, text='X', variable=self.x_cb_value)
-        self.x_cb.pack(anchor='w')
-        self.y_cb_value = tk.BooleanVar()
-        self.y_cb = tk.Checkbutton(override_checkboxes_frame, text='Y', variable=self.y_cb_value)
-        self.y_cb.pack(anchor='w')
-        self.z_cb_value = tk.BooleanVar()
-        self.z_cb = tk.Checkbutton(override_checkboxes_frame, text='Z', variable=self.z_cb_value)
-        self.z_cb.pack(anchor='w')
-        self.q_cb_value = tk.BooleanVar()
-        self.q_cb = tk.Checkbutton(override_checkboxes_frame, text='Q', variable=self.q_cb_value)
-        self.q_cb.pack(anchor='w')"""
 
 
         # Widget for library
@@ -82,7 +64,7 @@ class FormationLibraryEditor(tk.Frame):
         visualizer_nb.grid(row=1, column=1, sticky='NSEW')
 
         self.visual_editors = {}
-        for variation in ['mof', 'field', 'boundary', 'composite']:
+        for variation in ['mof', 'field', 'boundary']:
             visualizer_formation = adapters.variation_to_visualizer(self.current_formation,
                                                                     self.current_formation.variations[variation])
             self.visual_editors[variation] = FormationVisualizer(visualizer_nb,
@@ -91,6 +73,12 @@ class FormationLibraryEditor(tk.Frame):
                                                             )
             self.visual_editors[variation].pack(fill=tk.BOTH, expand=True)
             visualizer_nb.add(self.visual_editors[variation], text=variation.upper())
+
+        visualizer_formation = adapters.variation_to_visualizer(self.current_formation,
+                                                                self.current_formation.variations['mof'])
+        self.composite_visualizer = FormationVisualizer(visualizer_nb, visualizer_formation, lambda t, x, y: None)
+        self.composite_visualizer.pack(fill=tk.BOTH, expand=True)
+        visualizer_nb.add(self.composite_visualizer, text='COMPOSITE')
 
         self.refresh_library_listbox()
 
@@ -103,12 +91,7 @@ class FormationLibraryEditor(tk.Frame):
             self.current_formation = self.library.get_formation(listbox.get(index))
             for tag, cb_value in self.affected_players_cb_values.items():
                 cb_value.set(True if tag in self.current_formation.affected_player_tags else False)
-            """self.t_cb_value.set(True if 't' in self.current_formation.affected_player_tags else False)
-            self.h_cb_value.set(True if 'h' in self.current_formation.affected_player_tags else False)
-            self.x_cb_value.set(True if 'x' in self.current_formation.affected_player_tags else False)
-            self.y_cb_value.set(True if 'y' in self.current_formation.affected_player_tags else False)
-            self.z_cb_value.set(True if 'z' in self.current_formation.affected_player_tags else False)
-            self.q_cb_value.set(True if 'q' in self.current_formation.affected_player_tags else False)"""
+
             for variation in ['mof', 'field', 'boundary']:
                 visualizer_formation = adapters.variation_to_visualizer(self.current_formation,
                                                                         self.current_formation.variations[variation])
@@ -117,20 +100,6 @@ class FormationLibraryEditor(tk.Frame):
     def save_formation(self, *args):
         try:
             affected_player_tags = [tag for tag, cb_value in self.affected_players_cb_values.items() if cb_value.get()]
-            """for tag, cb_value in self.affected_players_cb_values.items():
-                cb_value.set(True if tag in self.current_formation.affected_player_tags else False)
-            if self.t_cb_value.get():
-                affected_player_tags.append('t')
-            if self.h_cb_value.get():
-                affected_player_tags.append('h')
-            if self.x_cb_value.get():
-                affected_player_tags.append('x')
-            if self.y_cb_value.get():
-                affected_player_tags.append('y')
-            if self.z_cb_value.get():
-                affected_player_tags.append('z')
-            if self.q_cb_value.get():
-                affected_player_tags.append('q')"""
 
             self.current_formation.affected_player_tags = affected_player_tags
             self.library.add_formation_to_library(self.formation_name_entry.get(), self.current_formation)
@@ -151,8 +120,10 @@ class FormationLibraryEditor(tk.Frame):
 
     def load_composite_formation(self, *args):
         try:
-            self.load_composite_formation_from_library(self.composite_name_entry.get())
-            self.formation_visual_editor.visualize_formation(self.current_formation)
+            variation = self.library.get_composite_formation_variation(self.composite_name_entry.get(), 'm')
+            visualizer_formation = adapters.variation_to_visualizer(self.current_formation,
+                                                                    variation)
+            self.composite_visualizer.visualize_formation(visualizer_formation)
         except LibraryException as e:
             messagebox.showerror('Load Composite Error', e)
 
@@ -167,9 +138,8 @@ class FormationLibraryEditor(tk.Frame):
         self.refresh_library_listbox()
 
     def update_player_position(self, variation, tag, x, y):
-        if variation != 'composite':
-            self.current_formation.variations[variation].players[tag]['x'] = x
-            self.current_formation.variations[variation].players[tag]['y'] = y
+        self.current_formation.variations[variation].players[tag]['x'] = x
+        self.current_formation.variations[variation].players[tag]['y'] = y
 
 
 
@@ -177,7 +147,18 @@ class FormationLibraryEditor(tk.Frame):
 if __name__ == '__main__':
     root = tk.Tk()
 
-    FormationLibraryEditor(root).pack(fill=tk.BOTH, expand=True)
+
+
+    library_editor = FormationLibraryEditor(root)
+    library_editor.pack(fill=tk.BOTH, expand=True)
+    library_editor.library.load_library('temp.scml')
+    library_editor.refresh_library_listbox()
+
+    def on_close():
+        library_editor.library.save_library('temp.scml')
+        root.destroy()
+
+    root.protocol("WM_DELETE_WINDOW", on_close)
 
     root.mainloop()
 

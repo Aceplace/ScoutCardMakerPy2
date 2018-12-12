@@ -39,14 +39,14 @@ class FormationVariation:
 
     def override_player_positions(self, override_variation, override_tags):
         for tag in override_tags:
-            self.players[tag].x = override_variation.players[tag].x
-            self.players[tag].y = override_variation.players[tag].y
+            self.players[tag]['x'] = override_variation.players[tag]['x']
+            self.players[tag]['y'] = override_variation.players[tag]['y']
 
     def flip(self):
         for player in self.players.values():
-            player.x *= -1
-        self.players['lt'].x, self.players['rt'].x = self.players['rt'].x, self.players['lt'].x
-        self.players['lg'].x, self.players['rg'].x = self.players['rg'].x, self.players['lg'].x
+            player['x'] *= -1
+        self.players['lt']['x'], self.players['rt']['x'] = self.players['rt']['x'], self.players['lt']['x']
+        self.players['lg']['x'], self.players['rg']['x'] = self.players['rg']['x'], self.players['lg']['x']
 
 def get_default_variation(type):
     variation = FormationVariation()
