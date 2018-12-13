@@ -2,18 +2,18 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
-import adapters
-from formation import Formation
-from formationlibrary import FormationLibrary
-from formationvisualizer import FormationVisualizer
-from exceptions import LibraryException
+from offense import adapters
+from offense.formation import Formation
+from offense.formationlibrary import FormationLibrary
+from offense.formationvisualizer import FormationVisualizer
+from misc.exceptions import LibraryException
 
 
 class FormationLibraryEditor(tk.Frame):
-    def __init__(self, root):
+    def __init__(self, root, library):
         super(FormationLibraryEditor, self).__init__(root)
         self.current_formation = Formation()
-        self.library = FormationLibrary()
+        self.library = library
 
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(1, weight=1)
@@ -134,8 +134,10 @@ class FormationLibraryEditor(tk.Frame):
         for formation in formations:
             self.library_lb.insert(tk.END, formation)
 
+
     def refresh_library(self):
         self.refresh_library_listbox()
+
 
     def update_player_position(self, variation, tag, x, y):
         self.current_formation.variations[variation].players[tag]['x'] = x
@@ -146,8 +148,6 @@ class FormationLibraryEditor(tk.Frame):
 
 if __name__ == '__main__':
     root = tk.Tk()
-
-
 
     library_editor = FormationLibraryEditor(root)
     library_editor.pack(fill=tk.BOTH, expand=True)

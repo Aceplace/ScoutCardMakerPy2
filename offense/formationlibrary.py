@@ -1,5 +1,5 @@
-from formation import get_default_variation
-from exceptions import LibraryException
+from offense.formation import get_default_variation
+from misc.exceptions import LibraryException
 import copy
 import pickle
 import re
