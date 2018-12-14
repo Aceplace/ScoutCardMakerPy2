@@ -1,34 +1,30 @@
 import copy
 
 class Player:
-    def __init__(self, tag, label, type, eligible):
+    def __init__(self, tag, label):
         self.tag = tag
         self.label = label
-        self.type = type
-        self.eligible = eligible
 
 class Formation:
     def __init__(self):
         self.players = {}
-        self.players['lt'] = Player('lt', 'LT', 'line', False)
-        self.players['lg'] = Player('lg', 'LG', 'line', False)
-        self.players['c'] = Player('c', 'C', 'line', False)
-        self.players['rg'] = Player('rg', 'RG', 'line', False)
-        self.players['rt'] = Player('rt', 'RT', 'line', False)
-        self.players['t'] = Player('t', 'T', 'backfield', True)
-        self.players['h'] = Player('h', 'H', 'backfield', True)
-        self.players['x'] = Player('x', 'X', 'backfield', True)
-        self.players['y'] = Player('y', 'Y', 'attached', True)
-        self.players['z'] = Player('z', 'Z', 'attached', True)
-        self.players['q'] = Player('q', 'Q', 'attached', False)
+        self.players['lt'] = Player('lt', 'LT')
+        self.players['lg'] = Player('lg', 'LG')
+        self.players['c'] = Player('c', 'C')
+        self.players['rg'] = Player('rg', 'RG')
+        self.players['rt'] = Player('rt', 'RT')
+        self.players['t'] = Player('t', 'T')
+        self.players['h'] = Player('h', 'H')
+        self.players['x'] = Player('x', 'X')
+        self.players['y'] = Player('y', 'Y')
+        self.players['z'] = Player('z', 'Z')
+        self.players['q'] = Player('q', 'Q')
         self.affected_player_tags = []
         self.variations = {
             'mof': get_default_variation('mof'),
             'field': get_default_variation('field'),
             'boundary': get_default_variation('boundary')
         }
-
-
 
 class FormationVariation:
     def __init__(self):

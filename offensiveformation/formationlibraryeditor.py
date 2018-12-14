@@ -36,7 +36,7 @@ class FormationLibraryEditor(tk.Frame):
 
         # Widgets to indicate which players are being overridden
         override_checkboxes_frame = tk.Frame(self)
-        override_checkboxes_frame.grid(row=0, column=1, stick='w')
+        override_checkboxes_frame.grid(row=0, column=1, sticky='W')
         tk.Label(override_checkboxes_frame, text='Affected Players').pack(anchor='w')
         self.affected_players_cb_values = {}
         for player_tag in ['t','h','x','y','z','q']:
@@ -44,7 +44,6 @@ class FormationLibraryEditor(tk.Frame):
             tk.Checkbutton(override_checkboxes_frame,
                            text=player_tag.upper(),
                            variable=self.affected_players_cb_values[player_tag]).pack(anchor='w')
-
 
         # Widget for library
         formation_library_frame = tk.Frame(self)
