@@ -3,9 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox
 
 from offensiveformation import adapters
-from offensiveformation.formation import Formation
-from offensiveformation.formationlibrary import FormationLibrary
-from offensiveformation.formationvisualizer import FormationVisualizer
+from misc.alignmentvisualizer import AlignmentVisualizer
 from misc.exceptions import LibraryException
 
 
@@ -46,16 +44,16 @@ class FormationEditor(tk.Frame):
         for variation in ['mof', 'field', 'boundary']:
             visualizer_formation = adapters.variation_to_visualizer(self.current_formation,
                                                                     self.current_formation.variations[variation])
-            self.visual_editors[variation] = FormationVisualizer(visualizer_nb,
-                                                            visualizer_formation,
-                                                            lambda t, x, y, v=variation: self.update_player_position(v, t, x, y)
-                                                            )
+            self.visual_editors[variation] = AlignmentVisualizer(visualizer_nb,
+                                                                 visualizer_formation,
+                                                                 lambda t, x, y, v=variation: self.update_player_position(v, t, x, y)
+                                                                 )
             self.visual_editors[variation].pack(fill=tk.BOTH, expand=True)
             visualizer_nb.add(self.visual_editors[variation], text=variation.upper())
 
         visualizer_formation = adapters.variation_to_visualizer(self.current_formation,
                                                                 self.current_formation.variations['mof'])
-        self.composite_visualizer = FormationVisualizer(visualizer_nb, visualizer_formation, lambda t, x, y: None)
+        self.composite_visualizer = AlignmentVisualizer(visualizer_nb, visualizer_formation, lambda t, x, y: None)
         self.composite_visualizer.pack(fill=tk.BOTH, expand=True)
         visualizer_nb.add(self.composite_visualizer, text='COMPOSITE')
 

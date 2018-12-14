@@ -8,6 +8,7 @@ VERTICAL_COORDINATE_SIZE = 25
 PLAYER_WIDTH = 26
 PLAYER_HEIGHT = 20
 LABEL_FONT = "Times 12"
+DEFENDER_FONT = "Times 18"
 HASH_SIZE = 5
 #Derived Constant Values
 LEFT_SIDELINE = CENTER_X_POS - HORIZONTAL_COORDINATE_SIZE * 53
@@ -24,12 +25,15 @@ FIVE_YARDS = VERTICAL_COORDINATE_SIZE * 5
 def player_coordinates_to_canvas(player_x, player_y):
     return (CENTER_X_POS + player_x * HORIZONTAL_COORDINATE_SIZE, CENTER_Y_POS + player_y * VERTICAL_COORDINATE_SIZE)
 
+def defender_coordinates_to_canvas(defender_x, defender_y):
+    return (CENTER_X_POS + defender_x * HORIZONTAL_COORDINATE_SIZE, CENTER_Y_POS - defender_y * VERTICAL_COORDINATE_SIZE)
+
 def canvas_coordinates_to_player(player_x, player_y):
     return (int((player_x - CENTER_X_POS) / HORIZONTAL_COORDINATE_SIZE), int((player_y - CENTER_Y_POS) / VERTICAL_COORDINATE_SIZE))
 
-class FormationVisualizer(tk.Frame):
+class AlignmentVisualizer(tk.Frame):
     def __init__(self, root, formation, drag_player_callback):
-        super(FormationVisualizer, self).__init__(root)
+        super(AlignmentVisualizer, self).__init__(root)
         self.drag_player_callback = drag_player_callback
 
         self.grid_rowconfigure(0, weight=1)
@@ -74,11 +78,19 @@ class FormationVisualizer(tk.Frame):
         for player in formation.players:
             x, y = player_coordinates_to_canvas(player.x, player.y)
             self.player_shapes[player.tag] = {
-                "oval": self.canvas.create_oval(x - PLAYER_WIDTH / 2, y - PLAYER_HEIGHT / 2,
+                'oval': self.canvas.create_oval(x - PLAYER_WIDTH / 2, y - PLAYER_HEIGHT / 2,
                                                 x + PLAYER_WIDTH / 2, y + PLAYER_HEIGHT / 2,
-                                                fill="white"),
-                "text": self.canvas.create_text(x, y, text=player.label, font=LABEL_FONT),
-                "tag": player.tag}
+                                                fill='white'),
+                'text': self.canvas.create_text(x, y, text=player.label, font=LABEL_FONT),
+                'tag': player.tag}
+
+        self.defender_shapes = {}
+        for defender_tag in ['t','n','p','a','w','m','b','s','c','f','q']:
+            self.defender_shapes[defender_tag] = {
+                'text': self.canvas.create_text(x, y, text=defender_tag.upper(), font=DEFENDER_FONT),
+                'tag': defender_tag
+            }
+            self.canvas.itemconfigure(self.defender_shapes[defender_tag]['text'], state=tk.HIDDEN)
 
         # Set up canvas to allow items to be dragged
         self.drag_data = {"x": 0, "y": 0, "item": None}
@@ -87,12 +99,27 @@ class FormationVisualizer(tk.Frame):
         self.canvas.bind("<B1-Motion>", self.on_move)
 
     def visualize_formation(self, formation):
+        for defender_shape in self.defender_shapes.values():
+            self.canvas.itemconfigure(defender_shape['text'], state=tk.HIDDEN)
+
         for player in formation.players:
             x, y = player_coordinates_to_canvas(player.x, player.y)
             self.canvas.coords(self.player_shapes[player.tag]["oval"],
                                x - PLAYER_WIDTH / 2, y - PLAYER_HEIGHT / 2,
                                x + PLAYER_WIDTH / 2, y + PLAYER_HEIGHT / 2)
             self.canvas.coords(self.player_shapes[player.tag]["text"], x, y)
+
+    def visualize_formation_and_defense(self, formation, defense):
+        for label, player in formation.players.items():
+            x, y = player_coordinates_to_canvas(player.x, player.y)
+            self.canvas.coords(self.player_shapes[label]["Oval"], x - PLAYER_WIDTH / 2, y - PLAYER_HEIGHT / 2,
+                               x + PLAYER_WIDTH / 2, y + PLAYER_HEIGHT / 2)
+            self.canvas.coords(self.player_shapes[label]["Text"], x, y)
+        for label, defender in defense.defenders.items():
+            x, y = defender_coordinates_to_canvas(*defender.place_defender(formation))
+            self.canvas.coords(self.defender_shapes[label]["Text"], x, y)
+            self.canvas.itemconfigure(self.defender_shapes[label]["Text"],
+                                      state=tk.NORMAL if label in defense.affected_defender_tags else tk.HIDDEN)
 
     def on_press(self, event): #get initial location of object to be moved
         x = self.canvas.canvasx(event.x)
@@ -157,6 +184,6 @@ if __name__ == '__main__':
 
     root = tk.Tk()
 
-    visualizer = FormationVisualizer(root, visualizer_formation, callback)
+    visualizer = AlignmentVisualizer(root, visualizer_formation, callback)
     visualizer.pack(fill=tk.BOTH, expand=True)
     root.mainloop()

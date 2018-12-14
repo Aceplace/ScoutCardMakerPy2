@@ -1,12 +1,8 @@
 import tkinter as tk
-from tkinter import ttk
 from tkinter import messagebox
 
-from offensiveformation import adapters
 from offensiveformation.formation import Formation
 from offensiveformation.formationeditor import FormationEditor
-from offensiveformation.formationlibrary import FormationLibrary
-from offensiveformation.formationvisualizer import FormationVisualizer
 from misc.exceptions import LibraryException
 
 
