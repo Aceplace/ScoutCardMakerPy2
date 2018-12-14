@@ -30,10 +30,11 @@ class PlacementRule:
                 return parameter['value']
         raise PlacementException(f'Couldn\'t find parameter {parameter_name}')
 
-    def set_paremeter_value(self, parameter_name, parameter_value):
+    def set_parameter_value(self, parameter_name, parameter_value):
         for parameter in self.parameters:
             if parameter['name'] == parameter_name:
                 parameter['value'] = parameter_value
+                return
         raise PlacementException(f'Couldn\'t update parameter {parameter_name}')
 
 
@@ -55,32 +56,32 @@ class PlacementRuleGui(tk.Frame):
             else:
                 widget, option_var = self.create_option_parameter_widget(descriptor)
                 self.parameter_widgets.append({'parameter_name':parameter_name, 'type':type, 'widget':widget, 'var':option_var})
-            widget.grid(row=i, column=1, sticky='W')
+            widget.grid(row=i, column=1, sticky='EW')
         self.fill_in_starting_values()
 
 
     def create_number_parameter_widget(self, descriptor):
         min = descriptor['min']
         max = descriptor['max']
-        return tk.Spinbox(self, from_ = min, to_ = max, state='readonly', command=self.update_defender)
+        return tk.Spinbox(self, from_ = min, to_ = max, state='readonly', command=self.update_placement_rule)
 
 
     def create_option_parameter_widget(self, descriptor):
         menu_options = descriptor['options']
         option_var = tk.StringVar()
-        return tk.OptionMenu(self, option_var, *menu_options, command=self.update_defender)
+        return tk.OptionMenu(self, option_var, *menu_options, command=self.update_placement_rule), option_var
 
     def fill_in_starting_values(self):
         for widget in self.parameter_widgets:
             if widget['type'] == 'number':
                 widget['widget'].configure(state=tk.NORMAL)
-                self.depth_sb.delete(0, tk.END)
-                self.depth_sb.insert(0, self.placement_rule.get_parameter_value(widget['parameter_name']))
+                widget['widget'].delete(0, tk.END)
+                widget['widget'].insert(0, self.placement_rule.get_parameter_value(widget['parameter_name']))
                 widget['widget'].configure(state='readonly')
             else:
                 widget['var'].set(self.placement_rule.get_parameter_value(widget['parameter_name']))
 
-    def update_defender(self, *args):
+    def update_placement_rule(self, *args):
         for widget in self.parameter_widgets:
             if widget['type'] == 'number':
                 self.placement_rule.set_parameter_value(widget['parameter_name'], int(widget['widget'].get()))
@@ -113,16 +114,20 @@ def alignment_placement_rule(formation, placement_rule):
         elif alignment in ['Four_I', 'Four', 'Five']:
             align_player = formation.lt if align_side == 'LEFT' else formation.rg
         elif alignment in ['Six_I', 'Six', 'Seven']:
-            align_player = get_first_attached(formation, 'LT') \
-                if align_side == 'left' else get_first_attached(formation, 'RT')
+            align_player = get_first_attached(formation, 'LEFT') \
+                if align_side == 'LEFT' else get_first_attached(formation, 'RIGHT')
+            ghost_distance_multiplier = 1
         elif alignment in ['Eight_I', 'Eight', 'Nine']:
-            align_player = get_second_attached(formation, 'LT') \
-                if align_side == 'left' else get_second_attached(formation, 'RT')
+            align_player = get_second_attached(formation, 'LEFT') \
+                if align_side == 'LEFT' else get_second_attached(formation, 'RIGHT')
+            ghost_distance_multiplier = 2
 
         if align_player:
             x = align_player.x + offset
         else:
-            x = formation.rt.x + GHOST_DISTANCE if align_side == 'RIGHT' else formation.lt.x - GHOST_DISTANCE
+            x = formation.rt.x + GHOST_DISTANCE * ghost_distance_multiplier \
+                if align_side == 'RIGHT' else \
+                formation.lt.x - GHOST_DISTANCE * ghost_distance_multiplier
 
         return x, y
 
@@ -131,7 +136,9 @@ if __name__=='__main__':
     from offensiveformation.formation import  Formation
     from defensiveformation.adapters import variation_to_defense_compatible_formation
     from defensiveformation.defense import Defender
+    from defensiveformation.placementruledescriptors import placement_rule_descriptors
     offensive_formation = Formation()
+    offensive_formation.variations['mof'].flip()
     defense_compat_formation = variation_to_defense_compatible_formation(offensive_formation,
                                                                          offensive_formation.variations['mof'])
 
@@ -139,12 +146,24 @@ if __name__=='__main__':
     placement_rule = PlacementRule()
     placement_rule.name = 'Alignment'
     placement_rule.parameters = [
-        {'name': 'Alignment', 'value': 'Eight_I'},
-        {'name': 'Direction', 'value': 'Str'},
+        {'name': 'Alignment', 'value': 'Seven'},
+        {'name': 'Direction', 'value': 'Wk'},
         {'name': 'Strength Type', 'value': 'Receiver'},
         {'name': 'Depth', 'value': 4}
     ]
     defender.placement_rules.append(placement_rule)
 
-    x, y = defender.place(defense_compat_formation)
-    print(x, y)
+
+    root = tk.Tk()
+    PlacementRuleGui(root, placement_rule, 'Alignment', placement_rule_descriptors['Alignment']).pack(fill=tk.BOTH, expand=True)
+    def place_defender():
+        x, y = defender.place(defense_compat_formation)
+        print(x, y)
+        root.after(1000, place_defender)
+    place_defender()
+    root.mainloop()
+
+
+
+
+

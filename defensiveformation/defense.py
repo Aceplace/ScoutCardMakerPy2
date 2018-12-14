@@ -22,7 +22,7 @@ class ConditionSet:
 
 
 class Defender:
-    def __init__(self):
+    def __init__(self, tag, label):
         self.condition_sets = []
         self.placement_rules = []
 
@@ -38,3 +38,39 @@ class Defender:
 
         x, y = self.placement_rules[0].place(formation)
         return x, y
+
+class Defense:
+    def __init__(self):
+        self.defenders = {}
+        self.defenders['t'] = Defender('t', 'T')
+        self.defenders['n'] = Defender('n', 'N')
+        self.defenders['p'] = Defender('p', 'P')
+        self.defenders['a'] = Defender('a', 'A')
+        self.defenders['w'] = Defender('w', 'W')
+        self.defenders['m'] = Defender('m', 'M')
+        self.defenders['b'] = Defender('b', 'B')
+        self.defenders['s'] = Defender('s', 'S')
+        self.defenders['f'] = Defender('f', 'S')
+        self.defenders['s'] = Defender('s', 'S')
+        self.defenders['q'] = Defender('q', 'Q')
+        self.affected_defender_tags = []
+
+    def copy_defense_from_defense(self, copy_defense):
+        for tag, defender in copy_defense.defenders.items():
+            self.defenders[tag].placement_rule = copy_defense.defenders[tag].placement_rule
+        self.affected_defender_tags = []
+        for tag in copy_defense.affected_defender_tags:
+            self.affected_defender_tags.append(tag)
+
+    def override_defense(self, override_defense):
+        for tag in override_defense.affected_defender_tags:
+            self.defenders[tag].placement_rule = override_defense.defenders[tag].placement_rule
+            if tag not in self.affected_defender_tags:
+                self.affected_defender_tags.append(tag)
+
+    def get_placed_defenders(self, formation):
+        placed_defenders = []
+        for tag, defender in self.defenders.items():
+            x, y = defender.place(formation)
+            placed_defenders.append((defender.label, x, y))
+        return placed_defenders
