@@ -4,8 +4,8 @@ from tkinter import messagebox
 import os
 
 from misc.exceptions import LibraryException
-from offense.formationlibrary import FormationLibrary
-from offense.formationlibraryeditor import FormationLibraryEditor
+from offensiveformation.formationlibrary import FormationLibrary
+from offensiveformation.formationlibraryeditor import FormationLibraryEditor
 
 
 class App(tk.Tk):

@@ -148,7 +148,7 @@ class FormationVisualizer(tk.Frame):
 
 
 if __name__ == '__main__':
-    from offense import formation, adapters
+    from offensiveformation import formation, adapters
 
     formation = formation.Formation()
     visualizer_formation = adapters.variation_to_visualizer(formation, formation.variations['boundary'])

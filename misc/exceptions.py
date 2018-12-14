@@ -3,3 +3,6 @@ class ScoutCardMakerException(Exception):
 
 class LibraryException(ScoutCardMakerException):
     pass
+
+class PlacementException(ScoutCardMakerException):
+    pass

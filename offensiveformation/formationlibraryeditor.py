@@ -2,10 +2,10 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
-from offense import adapters
-from offense.formation import Formation
-from offense.formationlibrary import FormationLibrary
-from offense.formationvisualizer import FormationVisualizer
+from offensiveformation import adapters
+from offensiveformation.formation import Formation
+from offensiveformation.formationlibrary import FormationLibrary
+from offensiveformation.formationvisualizer import FormationVisualizer
 from misc.exceptions import LibraryException
 
 

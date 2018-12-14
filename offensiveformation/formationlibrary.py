@@ -1,4 +1,4 @@
-from offense.formation import get_default_variation
+from offensiveformation.formation import get_default_variation
 from misc.exceptions import LibraryException
 import copy
 import pickle
