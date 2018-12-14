@@ -105,22 +105,6 @@ class FormationLibrary:
         if still_looking_for_match:
             raise LibraryException(sub_formation_name + ' doesn\'t exist in library. Create it.')
 
-
-        #check that all sub_formations exist and create a composite variation from them
-        """sub_formation_name = ''
-        formation_variation = get_default_variation(variation_type)
-        for word in formation_words:
-            sub_formation_name = word if sub_formation_name == '' else sub_formation_name + ' ' + word
-            if sub_formation_name in self.formations:
-                formation_variation.override_player_positions(
-                    self.formations[sub_formation_name].variations[variation_type],
-                    self.formations[sub_formation_name].affected_player_tags
-                )
-                sub_formation_name = ''
-
-        if sub_formation_name != '':
-            raise LibraryException(sub_formation_name + ' doesn\'t exist in library. Create it.')"""
-
         if direction == 'LT':
             formation_variation.flip()
 
