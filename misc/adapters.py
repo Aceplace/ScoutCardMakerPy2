@@ -34,7 +34,7 @@ def variation_to_visualizer(variation):
     return visualizer_formation
 
 
-def variation_to_defense_compatible_formation(formation, variation_name):
+def formation_to_defense_compatible_formation(formation, variation_name):
     formation_variation = formation.variations[variation_name]
     FormationPlayer = namedtuple('FormationPlayer', 'tag label x y')
     formation_players = {}
@@ -43,6 +43,29 @@ def variation_to_defense_compatible_formation(formation, variation_name):
         label = player.label
         x = formation_variation.players[tag]['x']
         y = formation_variation.players[tag]['y']
+        formation_players[tag] = FormationPlayer(tag=tag, label=label, x=x, y=y)
+
+    DefenseCompatibleFormation = namedtuple('DefenseCompatibleFormation', 'players q lt lg c rt rg')
+    defensive_compatible_formation = DefenseCompatibleFormation(
+        players=formation_players,
+        q=formation_players['q'],
+        lt=formation_players['lt'],
+        lg=formation_players['lg'],
+        c=formation_players['c'],
+        rg=formation_players['rg'],
+        rt=formation_players['rt']
+    )
+
+    return defensive_compatible_formation
+
+def variation_to_defense_compatible_formation(variation):
+    FormationPlayer = namedtuple('FormationPlayer', 'tag label x y')
+    formation_players = {}
+    for player in variation.players.values():
+        tag = player.tag
+        label = player.tag.upper() if len(player.tag) == 1 else player.tag[1].upper()
+        x = player['x']
+        y = player['y']
         formation_players[tag] = FormationPlayer(tag=tag, label=label, x=x, y=y)
 
     DefenseCompatibleFormation = namedtuple('DefenseCompatibleFormation', 'players q lt lg c rt rg')

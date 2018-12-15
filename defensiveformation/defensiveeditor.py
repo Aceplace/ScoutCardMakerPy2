@@ -2,12 +2,13 @@ import tkinter as tk
 from tkinter import messagebox
 
 from defensiveformation.defense import Defense
-from defensiveformation.placementrule import PlacementRuleGui
+from defensiveformation.placementrule import PlacementRuleGui, placement_rule_implementations
 from defensiveformation.placementruledescriptors import placement_rule_descriptors
-from misc.adapters import formation_to_visualizer, variation_to_defense_compatible_formation, \
-    placed_defense_to_visualizer
+from misc.adapters import formation_to_visualizer, formation_to_defense_compatible_formation, \
+    placed_defense_to_visualizer, variation_to_defense_compatible_formation
 from misc.alignmentvisualizer import AlignmentVisualizer
-from offensiveformation.formation import Formation
+from misc.exceptions import LibraryException
+from offensiveformation.formation import Formation, FormationVariation
 
 
 class DefensiveEditor(tk.Frame):
@@ -16,6 +17,7 @@ class DefensiveEditor(tk.Frame):
         self.library = library
         self.current_defense = Defense()
         self.current_defender = self.current_defense.defenders['c']
+        self.current_formation_variation = FormationVariation()
 
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(3, weight=1)
@@ -57,7 +59,7 @@ class DefensiveEditor(tk.Frame):
 
         # Widgets for selecting placement rule
         tk.Label(defender_frame, text='Placement Rule :').grid(row=1, column=0, sticky='E')
-        placement_rule_names = get_placement_names()
+        placement_rule_names = placement_rule_implementations.keys()
         self.placement_rule_name_value = tk.StringVar()
         self.placement_rule_name_value.set(self.current_defender.placement_rules[0].name)
         self.placement_rule_om = tk.OptionMenu(defender_frame, self.placement_rule_name_value, *placement_rule_names, command=self.change_placement_rule)
@@ -77,6 +79,7 @@ class DefensiveEditor(tk.Frame):
         self.change_placement_rule_gui()
 
     def change_placement_rule(self, *args):
+        #Need to create a default placement rule and stick it into the defender
         self.controller.change_placement_rule(self.placement_rule_name_value.get())
         self.change_placement_rule_gui()
 
@@ -92,57 +95,27 @@ class DefensiveEditor(tk.Frame):
         self.update_view()
 
     def update_view(self):
-        placed_defense = self.current_defense.get_placed_defenders(variation_to_defense_compatible_formation(self.current_formation, 'mof'))
+        placed_defense = self.current_defense.get_placed_defenders(variation_to_defense_compatible_formation(self.current_formation_variation))
         self.visualizer.visualize_formation_and_defense(formation_to_visualizer(self.current_formation, 'mof'),
                                                         placed_defense_to_visualizer(placed_defense))
 
     def get_affected_defenders(self):
-        affected_defender_tags = []
-        if self.t_cb_value.get():
-            affected_defender_tags.append('T')
-        if self.n_cb_value.get():
-            affected_defender_tags.append('N')
-        if self.a_cb_value.get():
-            affected_defender_tags.append('A')
-        if self.p_cb_value.get():
-            affected_defender_tags.append('P')
-        if self.w_cb_value.get():
-            affected_defender_tags.append('W')
-        if self.m_cb_value.get():
-            affected_defender_tags.append('M')
-        if self.b_cb_value.get():
-            affected_defender_tags.append('B')
-        if self.s_cb_value.get():
-            affected_defender_tags.append('S')
-        if self.c_cb_value.get():
-            affected_defender_tags.append('C')
-        if self.f_cb_value.get():
-            affected_defender_tags.append('F')
-        if self.q_cb_value.get():
-            affected_defender_tags.append('Q')
+        affected_defender_tags = [tag for tag, cb_value in self.formation_editor.affected_defender_cb_values.items() if cb_value.get()]
         return affected_defender_tags
 
     def set_affected_defender_checkboxes(self):
-        self.t_cb_value.set(True if 'T' in self.controller.current_defense.affected_defender_tags else False)
-        self.n_cb_value.set(True if 'N' in self.controller.current_defense.affected_defender_tags else False)
-        self.a_cb_value.set(True if 'A' in self.controller.current_defense.affected_defender_tags else False)
-        self.p_cb_value.set(True if 'P' in self.controller.current_defense.affected_defender_tags else False)
-        self.w_cb_value.set(True if 'W' in self.controller.current_defense.affected_defender_tags else False)
-        self.m_cb_value.set(True if 'M' in self.controller.current_defense.affected_defender_tags else False)
-        self.b_cb_value.set(True if 'B' in self.controller.current_defense.affected_defender_tags else False)
-        self.s_cb_value.set(True if 'S' in self.controller.current_defense.affected_defender_tags else False)
-        self.c_cb_value.set(True if 'C' in self.controller.current_defense.affected_defender_tags else False)
-        self.f_cb_value.set(True if 'F' in self.controller.current_defense.affected_defender_tags else False)
-        self.q_cb_value.set(True if 'Q' in self.controller.current_defense.affected_defender_tags else False)
+        for tag, cb_value in self.affected_defender_cb_values.items():
+            cb_value.set(True if tag in self.current_defense.affected_player_tags else False)
 
     def get_offensive_formation(self, *args):
         try:
-            self.controller.load_offensive_formation(self.offensive_formation_entry.get())
+            self.curren_variation = self.libary.get_composite_formation_variation(self.offensive_formation_entry.get(), 'm')
             self.update_view()
-        except ScoutCardMakerException as e:
+        except LibraryException as e:
             messagebox.showerror('Load Formation Error', e)
 
     def checked_affected_defenders_box(self):
+        #needs to update affected defender tags and the view
         self.controller.checked_affected_defenders_box(self.get_affected_defenders())
 
 

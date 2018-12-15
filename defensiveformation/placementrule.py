@@ -134,12 +134,12 @@ def alignment_placement_rule(formation, placement_rule):
 
 if __name__=='__main__':
     from offensiveformation.formation import  Formation
-    from misc.adapters import variation_to_defense_compatible_formation
+    from misc.adapters import formation_to_defense_compatible_formation
     from defensiveformation.defense import Defender
     from defensiveformation.placementruledescriptors import placement_rule_descriptors
     offensive_formation = Formation()
     offensive_formation.variations['mof'].flip()
-    defense_compat_formation = variation_to_defense_compatible_formation(offensive_formation, 'mof')
+    defense_compat_formation = formation_to_defense_compatible_formation(offensive_formation, 'mof')
 
     defender = Defender()
     placement_rule = PlacementRule()
