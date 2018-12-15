@@ -52,8 +52,8 @@ class Defense:
         self.defenders['m'] = Defender('m', 'M')
         self.defenders['b'] = Defender('b', 'B')
         self.defenders['s'] = Defender('s', 'S')
-        self.defenders['f'] = Defender('f', 'S')
-        self.defenders['s'] = Defender('s', 'S')
+        self.defenders['f'] = Defender('f', 'F')
+        self.defenders['c'] = Defender('c', 'C')
         self.defenders['q'] = Defender('q', 'Q')
         self.affected_defender_tags = []
 

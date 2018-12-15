@@ -85,7 +85,7 @@ class AlignmentVisualizer(tk.Frame):
                 'tag': player.tag}
 
         self.defender_shapes = {}
-        for defender_tag in ['t','n','p','a','w','m','b','s','c','f','q']:
+        for defender_tag in ['t','n','p','a','w','m','b','s','c','q','f']:
             self.defender_shapes[defender_tag] = {
                 'text': self.canvas.create_text(x, y, text=defender_tag.upper(), font=DEFENDER_FONT),
                 'tag': defender_tag
@@ -110,16 +110,28 @@ class AlignmentVisualizer(tk.Frame):
             self.canvas.coords(self.player_shapes[player.tag]["text"], x, y)
 
     def visualize_formation_and_defense(self, formation, defense):
-        for tag, player in formation.players.items():
+        """for tag, player in formation.players.items():
             x, y = player_coordinates_to_canvas(player.x, player.y)
-            self.canvas.coords(self.player_shapes[tag]["Oval"], x - PLAYER_WIDTH / 2, y - PLAYER_HEIGHT / 2,
+            self.canvas.coords(self.player_shapes[tag]["Oval"],
+                               x - PLAYER_WIDTH / 2, y - PLAYER_HEIGHT / 2,
                                x + PLAYER_WIDTH / 2, y + PLAYER_HEIGHT / 2)
-            self.canvas.coords(self.player_shapes[tag]["Text"], x, y)
-        for tag, defender in defense.defenders.items():
+            self.canvas.coords(self.player_shapes[tag]["Text"], x, y)"""
+        for player in formation.players:
+            x, y = player_coordinates_to_canvas(player.x, player.y)
+            self.canvas.coords(self.player_shapes[player.tag]["oval"],
+                               x - PLAYER_WIDTH / 2, y - PLAYER_HEIGHT / 2,
+                               x + PLAYER_WIDTH / 2, y + PLAYER_HEIGHT / 2)
+            self.canvas.coords(self.player_shapes[player.tag]["text"], x, y)
+        """for tag, defender in defense.defenders.items():
             x, y = defender_coordinates_to_canvas(defender.x, defender.y)
             self.canvas.coords(self.defender_shapes[tag]["Text"], x, y)
             self.canvas.itemconfigure(self.defender_shapes[tag]["Text"],
-                                      state=tk.NORMAL if tag in defense.affected_defender_tags else tk.HIDDEN)
+                                      state=tk.NORMAL if tag in defense.affected_defender_tags else tk.HIDDEN)"""
+        for defender in defense.players:
+            x, y = defender_coordinates_to_canvas(defender.x, defender.y)
+            self.canvas.coords(self.defender_shapes[defender.tag]["text"], x, y)
+            self.canvas.itemconfigure(self.defender_shapes[defender.tag]["text"],
+                                      state=tk.NORMAL if defender.tag in defense.affected_defender_tags else tk.HIDDEN)
 
     def on_press(self, event): #get initial location of object to be moved
         x = self.canvas.canvasx(event.x)

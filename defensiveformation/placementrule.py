@@ -1,26 +1,36 @@
+import copy
 import tkinter as tk
 
-from defensiveformation.formationinfoutils import get_align_side, get_first_attached, get_second_attached, \
-    GHOST_DISTANCE
 from misc.exceptions import PlacementException
 
+class PlacementRuleImplementation:
+    def __init__(self, name, default_parameters, parameter_descriptor, placer_method):
+        self.name = name
+        self.default_parameters = default_parameters
+        self.parameter_descriptor = parameter_descriptor
+        self.placer_method = placer_method
 
-placement_rule_implementations = {}
-def placement_rule_implementation(placement_rule_name):
-    def inner_placement_rule_implementation(implementation):
-        placement_rule_implementations[placement_rule_name] = implementation
-        return implementation
-    return inner_placement_rule_implementation
+    def get_default_parameters(self):
+        return copy.deepcopy(self.default_parameters)
 
 
 class PlacementRule:
-    def __init__(self):
-        self.name = ''
-        self.parameters = []
+    placement_rule_implementations = {}
+    @classmethod
+    def register_placement_rule(cls, name, default_parameters, parameter_descriptor, placer_method):
+        implementation = PlacementRuleImplementation(name, default_parameters, parameter_descriptor, placer_method)
+        PlacementRule.placement_rule_implementations[name] = implementation
+
+    def __init__(self, name):
+        self.name = name
+        try:
+            self.parameters = PlacementRule.placement_rule_implementations[self.name].get_default_parameters()
+        except KeyError:
+            raise PlacementException(f'No implementation for {self.name} placement rule')
 
     def place(self, formation):
         try:
-            return placement_rule_implementations[self.name](formation, self)
+            return PlacementRule.placement_rule_implementations[self.name].placer_method(formation, self)
         except KeyError:
             raise PlacementException(f'No implementation for {self.name} placement rule')
 
@@ -39,10 +49,12 @@ class PlacementRule:
 
 
 class PlacementRuleGui(tk.Frame):
-    def __init__(self, root, placement_rule, placement_rule_name, parameter_list_descriptors):
+    def __init__(self, root, placement_rule, placement_rule_name, update_callback):
         super(PlacementRuleGui, self).__init__(root)
         self.placement_rule = placement_rule
         self.placement_rule_name = placement_rule_name
+        self.update_callback = update_callback
+        parameter_list_descriptors = PlacementRule.placement_rule_implementations[placement_rule_name].parameter_descriptor
 
         self.parameter_widgets = []
         for i in range(len(parameter_list_descriptors)):
@@ -87,49 +99,11 @@ class PlacementRuleGui(tk.Frame):
                 self.placement_rule.set_parameter_value(widget['parameter_name'], int(widget['widget'].get()))
             else:
                 self.placement_rule.set_parameter_value(widget['parameter_name'], widget['var'].get())
+        if self.update_callback:
+            self.update_callback()
 
 
 
-
-@placement_rule_implementation('Alignment')
-def alignment_placement_rule(formation, placement_rule):
-        alignment = placement_rule.get_parameter_value('Alignment')
-        direction = placement_rule.get_parameter_value('Direction')
-        strength_type = placement_rule.get_parameter_value('Strength Type')
-        depth = placement_rule.get_parameter_value('Depth')
-        y = depth
-
-        align_side = get_align_side(direction, strength_type, formation)
-        # modifier is affected by what side defender is on and whether they are inside or outside
-        offset = -1 if 'I' in alignment else 1
-        offset = offset if align_side == 'RIGHT' else offset * -1
-        if alignment in ['Zero', 'Two', 'Four', 'Six', 'Eight']:
-            offset = 0
-
-        # Get alignment player
-        if alignment in ['Zero', 'One']:
-            align_player = formation.c
-        elif alignment in ['Two_I', 'Two', 'Three']:
-            align_player = formation.lg if align_side == 'LEFT' else formation.rg
-        elif alignment in ['Four_I', 'Four', 'Five']:
-            align_player = formation.lt if align_side == 'LEFT' else formation.rg
-        elif alignment in ['Six_I', 'Six', 'Seven']:
-            align_player = get_first_attached(formation, 'LEFT') \
-                if align_side == 'LEFT' else get_first_attached(formation, 'RIGHT')
-            ghost_distance_multiplier = 1
-        elif alignment in ['Eight_I', 'Eight', 'Nine']:
-            align_player = get_second_attached(formation, 'LEFT') \
-                if align_side == 'LEFT' else get_second_attached(formation, 'RIGHT')
-            ghost_distance_multiplier = 2
-
-        if align_player:
-            x = align_player.x + offset
-        else:
-            x = formation.rt.x + GHOST_DISTANCE * ghost_distance_multiplier \
-                if align_side == 'RIGHT' else \
-                formation.lt.x - GHOST_DISTANCE * ghost_distance_multiplier
-
-        return x, y
 
 
 if __name__=='__main__':
