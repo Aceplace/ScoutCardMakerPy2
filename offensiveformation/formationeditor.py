@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
-from offensiveformation import adapters
+from misc import adapters
 from misc.alignmentvisualizer import AlignmentVisualizer
 from misc.exceptions import LibraryException
 
@@ -42,8 +42,7 @@ class FormationEditor(tk.Frame):
 
         self.visual_editors = {}
         for variation in ['mof', 'field', 'boundary']:
-            visualizer_formation = adapters.variation_to_visualizer(self.current_formation,
-                                                                    self.current_formation.variations[variation])
+            visualizer_formation = adapters.formation_to_visualizer(self.current_formation, variation)
             self.visual_editors[variation] = AlignmentVisualizer(visualizer_nb,
                                                                  visualizer_formation,
                                                                  lambda t, x, y, v=variation: self.update_player_position(v, t, x, y)
@@ -51,8 +50,7 @@ class FormationEditor(tk.Frame):
             self.visual_editors[variation].pack(fill=tk.BOTH, expand=True)
             visualizer_nb.add(self.visual_editors[variation], text=variation.upper())
 
-        visualizer_formation = adapters.variation_to_visualizer(self.current_formation,
-                                                                self.current_formation.variations['mof'])
+        visualizer_formation = adapters.formation_to_visualizer(self.current_formation, 'mof')
         self.composite_visualizer = AlignmentVisualizer(visualizer_nb, visualizer_formation, lambda t, x, y: None)
         self.composite_visualizer.pack(fill=tk.BOTH, expand=True)
         visualizer_nb.add(self.composite_visualizer, text='COMPOSITE')
@@ -60,8 +58,7 @@ class FormationEditor(tk.Frame):
     def load_composite_formation(self, *args):
         try:
             variation = self.library.get_composite_formation_variation(self.composite_name_entry.get(), 'm')
-            visualizer_formation = adapters.variation_to_visualizer(self.current_formation,
-                                                                    variation)
+            visualizer_formation = adapters.variation_to_visualizer(variation)
             self.composite_visualizer.visualize_formation(visualizer_formation)
         except LibraryException as e:
             messagebox.showerror('Load Composite Error', e)
@@ -76,8 +73,7 @@ class FormationEditor(tk.Frame):
             cb_value.set(True if tag in self.current_formation.affected_player_tags else False)
 
         for variation in ['mof', 'field', 'boundary']:
-            visualizer_formation = adapters.variation_to_visualizer(self.current_formation,
-                                                                    self.current_formation.variations[variation])
+            visualizer_formation = adapters.formation_to_visualizer(self.current_formation, variation)
             self.visual_editors[variation].visualize_formation(visualizer_formation)
 
 

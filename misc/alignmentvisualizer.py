@@ -110,16 +110,16 @@ class AlignmentVisualizer(tk.Frame):
             self.canvas.coords(self.player_shapes[player.tag]["text"], x, y)
 
     def visualize_formation_and_defense(self, formation, defense):
-        for label, player in formation.players.items():
+        for tag, player in formation.players.items():
             x, y = player_coordinates_to_canvas(player.x, player.y)
-            self.canvas.coords(self.player_shapes[label]["Oval"], x - PLAYER_WIDTH / 2, y - PLAYER_HEIGHT / 2,
+            self.canvas.coords(self.player_shapes[tag]["Oval"], x - PLAYER_WIDTH / 2, y - PLAYER_HEIGHT / 2,
                                x + PLAYER_WIDTH / 2, y + PLAYER_HEIGHT / 2)
-            self.canvas.coords(self.player_shapes[label]["Text"], x, y)
-        for label, defender in defense.defenders.items():
-            x, y = defender_coordinates_to_canvas(*defender.place_defender(formation))
-            self.canvas.coords(self.defender_shapes[label]["Text"], x, y)
-            self.canvas.itemconfigure(self.defender_shapes[label]["Text"],
-                                      state=tk.NORMAL if label in defense.affected_defender_tags else tk.HIDDEN)
+            self.canvas.coords(self.player_shapes[tag]["Text"], x, y)
+        for tag, defender in defense.defenders.items():
+            x, y = defender_coordinates_to_canvas(defender.x, defender.y)
+            self.canvas.coords(self.defender_shapes[tag]["Text"], x, y)
+            self.canvas.itemconfigure(self.defender_shapes[tag]["Text"],
+                                      state=tk.NORMAL if tag in defense.affected_defender_tags else tk.HIDDEN)
 
     def on_press(self, event): #get initial location of object to be moved
         x = self.canvas.canvasx(event.x)
@@ -168,17 +168,19 @@ class AlignmentVisualizer(tk.Frame):
         return None
 
     def call_drag_player_callback(self):
-        tag = self.drag_data["item"]["tag"]
-        x, y = self.canvas.coords(self.drag_data["item"]["text"])
-        x, y = canvas_coordinates_to_player(x, y)
-        self.drag_player_callback(tag, x, y)
+        if self.drag_player_callback:
+            tag = self.drag_data["item"]["tag"]
+            x, y = self.canvas.coords(self.drag_data["item"]["text"])
+            x, y = canvas_coordinates_to_player(x, y)
+            self.drag_player_callback(tag, x, y)
 
 
 if __name__ == '__main__':
-    from offensiveformation import formation, adapters
+    from offensiveformation import formation
+    from misc import adapters
 
     formation = formation.Formation()
-    visualizer_formation = adapters.variation_to_visualizer(formation, formation.variations['boundary'])
+    visualizer_formation = adapters.formation_to_visualizer(formation, 'boundary')
     def callback(tag, x, y):
         print(f'{tag}: {x}, {y}')
 

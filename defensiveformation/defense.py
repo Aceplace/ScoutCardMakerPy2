@@ -23,6 +23,8 @@ class ConditionSet:
 
 class Defender:
     def __init__(self, tag, label):
+        self.tag = tag
+        self.label = label
         self.condition_sets = []
         self.placement_rules = []
 
@@ -72,5 +74,5 @@ class Defense:
         placed_defenders = []
         for tag, defender in self.defenders.items():
             x, y = defender.place(formation)
-            placed_defenders.append((defender.label, x, y))
+            placed_defenders.append((defender.tag, defender.label, x, y))
         return placed_defenders
