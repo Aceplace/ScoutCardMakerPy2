@@ -1,15 +1,14 @@
 import tkinter as tk
 from tkinter import messagebox
 
-from defensiveformation.defense import Defense
+
 from defensiveformation.defensiveutils import get_default_defense
 from defensiveformation.placementrule import PlacementRuleGui, PlacementRule
-from defensiveformation.placementruledescriptors import placement_rule_descriptors
-from misc.adapters import formation_to_visualizer, formation_to_defense_compatible_formation, \
-    placed_defense_to_visualizer, variation_to_defense_compatible_formation, variation_to_visualizer
+from misc.adapters import formation_to_visualizer, placed_defense_to_visualizer, \
+    variation_to_defense_compatible_formation, variation_to_visualizer
 from misc.alignmentvisualizer import AlignmentVisualizer
 from misc.exceptions import LibraryException
-from offensiveformation.formation import Formation, FormationVariation, get_default_variation
+from offensiveformation.formation import Formation, get_default_variation
 from offensiveformation.formationlibrary import FormationLibrary
 
 
@@ -86,7 +85,6 @@ class DefensiveEditor(tk.Frame):
         self.change_placement_rule_gui()
 
     def change_placement_rule(self, *args):
-        #Need to create a default placement rule and stick it into the defender
         self.current_defender.placement_rules[0] = PlacementRule(self.placement_rule_name_value.get())
         self.change_placement_rule_gui()
 
@@ -131,6 +129,7 @@ class DefensiveEditor(tk.Frame):
 
 if __name__=='__main__':
     import defensiveformation.placementrules.alignmentplacementrule
+    import defensiveformation.placementrules.overplacementrule
     root = tk.Tk()
     library = FormationLibrary()
     library.load_library('temp.scml')

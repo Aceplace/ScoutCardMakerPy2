@@ -59,7 +59,7 @@ def alignment_placer(formation, placement_rule):
     elif alignment in ['Two_I', 'Two', 'Three']:
         align_player = formation.lg if align_side == 'LEFT' else formation.rg
     elif alignment in ['Four_I', 'Four', 'Five']:
-        align_player = formation.lt if align_side == 'LEFT' else formation.rg
+        align_player = formation.lt if align_side == 'LEFT' else formation.rt
     elif alignment in ['Six_I', 'Six', 'Seven']:
         align_player = get_first_attached(formation, 'LEFT') \
             if align_side == 'LEFT' else get_first_attached(formation, 'RIGHT')

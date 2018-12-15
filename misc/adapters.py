@@ -66,9 +66,14 @@ def variation_to_defense_compatible_formation(variation):
         y = player['y']
         formation_players[tag] = FormationPlayer(tag=tag, label=label, x=x, y=y)
 
-    DefenseCompatibleFormation = namedtuple('DefenseCompatibleFormation', 'players q lt lg c rt rg')
+    DefenseCompatibleFormation = namedtuple('DefenseCompatibleFormation', 'players t, h, x, y, z, q lt lg c rt rg')
     defensive_compatible_formation = DefenseCompatibleFormation(
         players=formation_players,
+        t=formation_players['t'],
+        h=formation_players['h'],
+        x=formation_players['x'],
+        y=formation_players['y'],
+        z=formation_players['z'],
         q=formation_players['q'],
         lt=formation_players['lt'],
         lg=formation_players['lg'],
