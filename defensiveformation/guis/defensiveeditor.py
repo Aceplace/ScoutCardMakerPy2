@@ -4,8 +4,7 @@ from tkinter import messagebox
 
 from defensiveformation.defensiveutils import get_default_defense
 from defensiveformation.placementrule import PlacementRule
-from defensiveformation.parametergui import ParameterGui
-from defensiveformation.placementrulegui import PlacementRuleGui
+from defensiveformation.guis.placementrulegui import PlacementRuleGui
 from misc.adapters import formation_to_visualizer, placed_defense_to_visualizer, \
     variation_to_defense_compatible_formation, variation_to_visualizer
 from misc.alignmentvisualizer import AlignmentVisualizer
@@ -73,29 +72,9 @@ class DefensiveEditor(tk.Frame):
         self.placement_rule_frame = None
         self.change_placement_rule_gui()
 
-        """placement_rule_frame = tk.Frame(self)
-        placement_rule_frame.grid(row=0, column=3, sticky='W')
-
-        tk.Label(placement_rule_frame, text='Placement Rule :').grid(row=0, column=0, sticky='E')
-        placement_rule_names = PlacementRule.placement_rule_implementations.keys()
-        self.placement_rule_name_value = tk.StringVar()
-        self.placement_rule_name_value.set(self.current_defender.placement_rules[0].name)
-        self.placement_rule_om = tk.OptionMenu(placement_rule_frame, self.placement_rule_name_value, *placement_rule_names,
-                                               command=self.change_placement_rule)
-        self.placement_rule_om.grid(row=1, column=1, sticky='WE')
-
-        formation = Formation()
-        self.visualizer = AlignmentVisualizer(self, formation_to_visualizer(formation, 'mof'), None)
-        self.visualizer.grid(row = 1, column = 0, columnspan = 4, sticky='NSEW')
-
-        self.placement_rule_frame = None
-        self.change_placement_rule_gui()"""
-
-
 
     def change_defender(self, *args):
         self.current_defender = self.current_defense.defenders[(self.current_defender_value.get().lower())]
-        #self.placement_rule_name_value.set(self.current_defender.placement_rules[0].name)
         self.change_placement_rule_gui()
 
     def change_placement_rule(self, *args):
@@ -110,9 +89,6 @@ class DefensiveEditor(tk.Frame):
         self.placement_rule_frame = PlacementRuleGui(self, self.current_defender,
                                                      self.current_defender.placement_rules[0], self.update_view)
         self.placement_rule_frame.grid(row = 0, column = 3, sticky='WE')
-        #placement_rule = self.current_defender.placement_rules[0]
-        #self.placement_rule_frame = ParameterGui(self, placement_rule, placement_rule.name, self.update_view)
-        #self.placement_rule_frame.grid(row = 0, column = 3, sticky = 'WE')
         self.update_view()
 
     def update_view(self):
@@ -145,9 +121,9 @@ class DefensiveEditor(tk.Frame):
 
 
 if __name__=='__main__':
+    import defensiveformation.placementrules.apexplacementrule
     import defensiveformation.placementrules.alignmentplacementrule
     import defensiveformation.placementrules.overplacementrule
-    import defensiveformation.placementrules.apexplacementrule
     root = tk.Tk()
     library = FormationLibrary()
     library.load_library('temp.scml')

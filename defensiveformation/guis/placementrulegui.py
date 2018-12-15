@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from defensiveformation.parametergui import ParameterGui
+from defensiveformation.guis.parametergui import ParameterGui
 from defensiveformation.placementrule import PlacementRule
 
 
@@ -13,7 +13,7 @@ class PlacementRuleGui(tk.Frame):
 
         # Widgets for placement rule selections
         placement_rule_selection_frame = tk.Frame(self)
-        placement_rule_selection_frame.grid(row=0, column=0, sticky='W')
+        placement_rule_selection_frame.grid(row=0, column=0)
 
         tk.Label(placement_rule_selection_frame, text='Placement Rule :').grid(row=0, column=0, sticky='E')
         placement_rule_names = PlacementRule.placement_rule_implementations.keys()
@@ -22,7 +22,7 @@ class PlacementRuleGui(tk.Frame):
         self.placement_rule_om = tk.OptionMenu(placement_rule_selection_frame, self.placement_rule_name_value,
                                                *placement_rule_names,
                                                command=self.change_placement_rule)
-        self.placement_rule_om.grid(row=1, column=0, sticky='WE')
+        self.placement_rule_om.grid(row=0, column=1, sticky='WE')
 
         # Widgets for editing parameters
         self.parameters_frame = None
@@ -41,6 +41,6 @@ class PlacementRuleGui(tk.Frame):
 
         placement_rule = self.defender.placement_rules[0]
         self.parameters_frame = ParameterGui(self, placement_rule, placement_rule.name, self.update_callback)
-        self.parameters_frame.grid(row = 0, column = 1, sticky = 'WE')
+        self.parameters_frame.grid(row = 2, column = 0, sticky = 'WE')
         if self.update_callback:
             self.update_callback()
