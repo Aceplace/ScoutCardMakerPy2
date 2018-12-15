@@ -31,27 +31,52 @@ class ConditionSetGui(tk.Frame):
             if i != 0:
                 connector_value = tk.StringVar()
                 connector_value.set(connectors[i])
-                connector_om = tk.OptionMenu(self.conditions_frame, connector_value, *connector_options, command=self.condition_change)
+                connector_om = tk.OptionMenu(self.conditions_frame, connector_value, *connector_options,
+                                             command=self.condition_change)
                 connector_om.grid(row=i, column=0, sticky='WE')
                 self.connector_om_values.append(connector_value)
-
-            self.condition_menu_values.append(tk.StringVar())
-            condition_menu_value = self.condition_menu_values[i]
-            condition_menu_value.set(condition)
-            menu_button = tk.Menubutton(self.conditions_frame, textvariable=condition_menu_value, indicatoron=True, borderwidth=1, relief='raised')
-            menu = tk.Menu(menu_button, tearoff=False)
-            menu_button.configure(menu=menu)
-
-            for condition_name in Conditions.condition_implementations.keys():
-                menu.add_radiobutton(value=condition_name, label=condition_name, variable=condition_menu_value, command=self.condition_change)
-            menu_button.grid(row=i, column=1, sticky='WE')
+                
+            self.create_and_add_conditions_menu(i, condition)
 
 
 
 
+    def create_and_add_conditions_menu(self, index, condition):
+        self.condition_menu_values.append(tk.StringVar())
+        condition_menu_value = self.condition_menu_values[index]
+        condition_menu_value.set(condition)
+        menu_button = tk.Menubutton(self.conditions_frame, textvariable=condition_menu_value, indicatoron=True,
+                                    borderwidth=1, relief='raised')
+        root_menu = tk.Menu(menu_button, tearoff=False)
+        menu_button.configure(menu=root_menu)
 
-    def create_connector_widget(self, starting_value, row):
-        pass
+        sub_menu_directory = {'root':{'menu':root_menu, 'sub_menus':{}}}
+        for condition_name in Conditions.condition_implementations.keys():
+            current_sub_menu_directory = sub_menu_directory['root']
+            split_condition_name = condition_name.split('/', 1)
+
+            while len(split_condition_name) == 2:
+                parent_category = split_condition_name[0]
+                remaining = split_condition_name[1]
+
+                if parent_category not in current_sub_menu_directory['sub_menus'].keys():
+                    sub_menu = tk.Menu(current_sub_menu_directory['menu'], tearoff=False)
+                    current_sub_menu_directory['menu'].add_cascade(label=parent_category, menu=sub_menu)
+                    current_sub_menu_directory['sub_menus'][parent_category] = {'menu':sub_menu, 'sub_menus':{}}
+
+                current_sub_menu_directory = current_sub_menu_directory['sub_menus'][parent_category]
+                split_condition_name = remaining.split('/',1)
+
+            remaining = split_condition_name[0]
+            current_sub_menu_directory['menu'].add_radiobutton(value=condition_name, label=remaining,
+                                                               variable=self.condition_menu_values[index],
+                                                               command=self.condition_change)
+
+        root_menu.add_radiobutton(value='Delete Condition', label='Delete Condition',
+                                  variable=self.condition_menu_values[index],
+                                  command=self.condition_change)
+        menu_button.grid(row=index, column=1, sticky='WE')
+
 
     def condition_change(self, *args):
         pass
