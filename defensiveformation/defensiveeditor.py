@@ -130,6 +130,7 @@ class DefensiveEditor(tk.Frame):
 if __name__=='__main__':
     import defensiveformation.placementrules.alignmentplacementrule
     import defensiveformation.placementrules.overplacementrule
+    import defensiveformation.placementrules.apexplacementrule
     root = tk.Tk()
     library = FormationLibrary()
     library.load_library('temp.scml')
