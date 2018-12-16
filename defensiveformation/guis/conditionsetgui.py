@@ -2,9 +2,8 @@ import tkinter as tk
 import defensiveformation.conditions as Conditions
 
 class ConditionSetGui(tk.Frame):
-    def __init__(self, root, defender, condition_set, update_callback):
+    def __init__(self, root, condition_set, update_callback):
         super(ConditionSetGui, self).__init__(root)
-        self.defender = defender
         self.condition_set = condition_set
         self.update_callback = update_callback
 
@@ -12,6 +11,7 @@ class ConditionSetGui(tk.Frame):
         condition_set_options_frame = tk.Frame(self)
         condition_set_options_frame.pack()
 
+        tk.Label(condition_set_options_frame, text='Conditions').pack(side=tk.TOP)
         tk.Button(condition_set_options_frame, text='Add', command=self.add_condition).pack(side=tk.LEFT)
         tk.Button(condition_set_options_frame, text='Reset', command=self.reset).pack(side=tk.LEFT)
 
@@ -99,16 +99,22 @@ class ConditionSetGui(tk.Frame):
 
         self.condition_set.conditions = conditions
         self.condition_set.connectors = connectors
+        if self.update_callback:
+            self.update_callback()
 
     def add_condition(self, *args):
         self.condition_set.conditions.append('Default')
         self.condition_set.connectors.append('and')
         self.create_conditions_frame()
+        if self.update_callback:
+            self.update_callback()
 
     def reset(self, *args):
         self.condition_set.conditions = ['Default']
         self.condition_set.connectors = ['First']
         self.create_conditions_frame()
+        if self.update_callback:
+            self.update_callback()
 
 
 
@@ -123,5 +129,5 @@ if __name__=='__main__':
     defender.condition_sets[0].connectors = ['first', 'or', 'and']
 
     root = tk.Tk()
-    ConditionSetGui(root, defender, defender.condition_sets[0], None).pack(fill=tk.BOTH, expand=True)
+    ConditionSetGui(root, defender.condition_sets[0], None).pack(fill=tk.BOTH, expand=True)
     root.mainloop()
