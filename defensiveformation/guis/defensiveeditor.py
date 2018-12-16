@@ -1,10 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 
-
-from defensiveformation.defensiveutils import get_default_defense
-from defensiveformation.placementrule import PlacementRule
-from defensiveformation.guis.placementrulegui import PlacementRuleGui
+from defensiveformation.defense import Defense
+from defensiveformation.guis.conditionplacementgui import ConditionPlacementGui
 from misc.adapters import formation_to_visualizer, placed_defense_to_visualizer, \
     variation_to_defense_compatible_formation, variation_to_visualizer
 from misc.alignmentvisualizer import AlignmentVisualizer
@@ -17,7 +15,7 @@ class DefensiveEditor(tk.Frame):
     def __init__(self, root, library):
         super(DefensiveEditor,self).__init__(root)
         self.library = library
-        self.current_defense = get_default_defense()
+        self.current_defense = Defense()
         self.current_defender = self.current_defense.defenders['c']
         self.current_formation_variation = get_default_variation('mof')
 
@@ -63,13 +61,13 @@ class DefensiveEditor(tk.Frame):
                                                  command=self.change_defender)
         self.current_defender_om.grid(row=0, column=1, sticky='WE')
 
-        # Widgets to show the defense and formation
+        # Widgets to visualize the defense and formation
         formation = Formation()
         self.visualizer = AlignmentVisualizer(self, formation_to_visualizer(formation, 'mof'), None)
         self.visualizer.grid(row=1, column=0, columnspan=4, sticky='NSEW')
 
-        # Widgets for placement rule
-        self.placement_rule_frame = None
+        # Widgets for condition placements
+        self.condition_placement_frame = None
         self.change_placement_rule_gui()
 
 
@@ -77,18 +75,13 @@ class DefensiveEditor(tk.Frame):
         self.current_defender = self.current_defense.defenders[(self.current_defender_value.get().lower())]
         self.change_placement_rule_gui()
 
-    def change_placement_rule(self, *args):
-        self.current_defender.placement_rules[0] = PlacementRule(self.placement_rule_name_value.get())
-        self.change_placement_rule_gui()
-
     def change_placement_rule_gui(self):
-        if self.placement_rule_frame:
-            self.placement_rule_frame.grid_forget()
-            self.placement_rule_frame.destroy()
+        if self.condition_placement_frame:
+            self.condition_placement_frame.grid_forget()
+            self.condition_placement_frame.destroy()
 
-        self.placement_rule_frame = PlacementRuleGui(self, self.current_defender,
-                                                     self.current_defender.placement_rules[0], self.update_view)
-        self.placement_rule_frame.grid(row = 0, column = 3, sticky='WE')
+        self.condition_placement_frame = ConditionPlacementGui(self, self.current_defender, self.update_view)
+        self.condition_placement_frame.grid(row = 0, column = 3, sticky='WE')
         self.update_view()
 
     def update_view(self):

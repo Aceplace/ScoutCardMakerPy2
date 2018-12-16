@@ -22,6 +22,9 @@ class ConditionSet:
                 one_condition_unsatisfied = True
         return not one_condition_unsatisfied
 
+    def __repr__(self):
+        return f'ConditionSet{{Conditions: {self.conditions}, Connectors: {self.connectors}}}'
+
 
 class Defender:
     def __init__(self, tag, label):

@@ -1,5 +1,6 @@
 import tkinter as tk
 
+from defensiveformation.defense import ConditionSet
 from defensiveformation.guis.conditionsetgui import ConditionSetGui
 from defensiveformation.guis.placementrulegui import PlacementRuleGui
 from defensiveformation.placementruleutils import get_default_placement_rule
@@ -28,7 +29,7 @@ class ConditionPlacementGui(tk.Frame):
         self.canvas.create_window((0, 0), window=self.condition_placement_frame, anchor='nw')
         self.condition_placement_frame.bind("<Configure>", self.on_frame_configure)
 
-        # Initialize add condition set and the sub guis
+        # Initialize and add condition set and the sub guis
         tk.Button(self.condition_placement_frame, text='Add Condition Set', command=self.add_condition_set).grid(row=0, column=0)
         self.condition_placement_sub_guis = []
         for index, condition_set, placement_rule in zip(range(len(defender.condition_sets)),
@@ -55,7 +56,7 @@ class ConditionPlacementGui(tk.Frame):
 
         condition_set_placement_frame = tk.Frame(condition_placement_sub_gui)
         ConditionSetGui(condition_set_placement_frame, condition_set, self.update_callback).pack(side=tk.LEFT)
-        PlacementRuleGui(condition_set_placement_frame, self.defender, placement_rule, self.update_callback).pack(side=tk.RIGHT)
+        PlacementRuleGui(condition_set_placement_frame, placement_rule, self.update_callback).pack(side=tk.RIGHT)
         condition_set_placement_frame.grid(row=1, column=0, columnspan=3, sticky='WE')
 
         condition_placement_sub_gui.grid(row=0, column=index+1, sticky='NS')

@@ -47,6 +47,9 @@ class PlacementRule:
                 return
         raise PlacementException(f'Couldn\'t update parameter {parameter_name}')
 
+    def __repr__(self):
+        return f'Placement Rule{{ Name: {self.name}, Parameters: {self.parameters}}}'
+
 
 if __name__=='__main__':
     from offensiveformation.formation import  Formation
