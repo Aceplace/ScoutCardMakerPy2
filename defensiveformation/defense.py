@@ -1,9 +1,7 @@
+from defensiveformation.conditions import evaluate_condition
 from defensiveformation.placementruleutils import get_default_placement_rule
 
 BAD_PLACEMENT = (55, 15)
-
-def evaluate_condition(condition, formation):
-    return True
 
 class ConditionSet:
     def __init__(self):
@@ -34,16 +32,16 @@ class Defender:
         self.placement_rules = [get_default_placement_rule()]
 
     def place(self, formation):
-        """found_suitable_condition = False
-        for condition_set, placement_rule in zip(self.condition_set, self.placement_rules):
+        found_suitable_condition = False
+        for condition_set, placement_rule in zip(self.condition_sets, self.placement_rules):
             if condition_set.condition_set_satisfied(formation):
-                x, y = self.placement_rule.place(formation)
+                x, y = placement_rule.place(formation)
                 found_suitable_condition = True
                 break
         if not found_suitable_condition:
-            x , y = BAD_PLACEMENT"""
+            x , y = BAD_PLACEMENT
 
-        x, y = self.placement_rules[0].place(formation)
+        #x, y = self.placement_rules[0].place(formation)
         return x, y
 
 class Defense:

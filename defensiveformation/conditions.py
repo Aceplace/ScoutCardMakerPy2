@@ -46,3 +46,6 @@ def surface_structure_condition(formation, direction, strength_type, acceptable_
 
     surface_structures = get_surface_structures(formation, direction_str)
     return any(structure in acceptable_surface_structures for structure in surface_structures)
+
+def evaluate_condition(condition, formation):
+    return condition_implementations[condition](formation)
