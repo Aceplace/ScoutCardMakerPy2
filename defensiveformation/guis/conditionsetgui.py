@@ -116,18 +116,3 @@ class ConditionSetGui(tk.Frame):
         if self.update_callback:
             self.update_callback()
 
-
-
-
-
-if __name__=='__main__':
-    from defensiveformation.defense import Defender, ConditionSet
-    defender = Defender('t','T')
-    defender.condition_sets.append(ConditionSet())
-
-    defender.condition_sets[0].conditions = ['Default', 'Default', 'Default']
-    defender.condition_sets[0].connectors = ['first', 'or', 'and']
-
-    root = tk.Tk()
-    ConditionSetGui(root, defender.condition_sets[0], None).pack(fill=tk.BOTH, expand=True)
-    root.mainloop()

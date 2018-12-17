@@ -110,23 +110,12 @@ class AlignmentVisualizer(tk.Frame):
             self.canvas.coords(self.player_shapes[player.tag]["text"], x, y)
 
     def visualize_formation_and_defense(self, formation, defense):
-        """for tag, player in formation.players.items():
-            x, y = player_coordinates_to_canvas(player.x, player.y)
-            self.canvas.coords(self.player_shapes[tag]["Oval"],
-                               x - PLAYER_WIDTH / 2, y - PLAYER_HEIGHT / 2,
-                               x + PLAYER_WIDTH / 2, y + PLAYER_HEIGHT / 2)
-            self.canvas.coords(self.player_shapes[tag]["Text"], x, y)"""
         for player in formation.players:
             x, y = player_coordinates_to_canvas(player.x, player.y)
             self.canvas.coords(self.player_shapes[player.tag]["oval"],
                                x - PLAYER_WIDTH / 2, y - PLAYER_HEIGHT / 2,
                                x + PLAYER_WIDTH / 2, y + PLAYER_HEIGHT / 2)
             self.canvas.coords(self.player_shapes[player.tag]["text"], x, y)
-        """for tag, defender in defense.defenders.items():
-            x, y = defender_coordinates_to_canvas(defender.x, defender.y)
-            self.canvas.coords(self.defender_shapes[tag]["Text"], x, y)
-            self.canvas.itemconfigure(self.defender_shapes[tag]["Text"],
-                                      state=tk.NORMAL if tag in defense.affected_defender_tags else tk.HIDDEN)"""
         for defender in defense.players:
             x, y = defender_coordinates_to_canvas(defender.x, defender.y)
             self.canvas.coords(self.defender_shapes[defender.tag]["text"], x, y)
@@ -185,19 +174,3 @@ class AlignmentVisualizer(tk.Frame):
             x, y = self.canvas.coords(self.drag_data["item"]["text"])
             x, y = canvas_coordinates_to_player(x, y)
             self.drag_player_callback(tag, x, y)
-
-
-if __name__ == '__main__':
-    from offensiveformation import formation
-    from misc import adapters
-
-    formation = formation.Formation()
-    visualizer_formation = adapters.formation_to_visualizer(formation, 'boundary')
-    def callback(tag, x, y):
-        print(f'{tag}: {x}, {y}')
-
-    root = tk.Tk()
-
-    visualizer = AlignmentVisualizer(root, visualizer_formation, callback)
-    visualizer.pack(fill=tk.BOTH, expand=True)
-    root.mainloop()

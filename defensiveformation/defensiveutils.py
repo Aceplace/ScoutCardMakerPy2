@@ -1,2 +1,0 @@
-from defensiveformation.defense import Defense
-from defensiveformation.placementrule import PlacementRule

@@ -51,36 +51,5 @@ class PlacementRule:
         return f'Placement Rule{{ Name: {self.name}, Parameters: {self.parameters}}}'
 
 
-if __name__=='__main__':
-    from offensiveformation.formation import  Formation
-    from misc.adapters import formation_to_defense_compatible_formation
-    from defensiveformation.defense import Defender
-    offensive_formation = Formation()
-    offensive_formation.variations['mof'].flip()
-    defense_compat_formation = formation_to_defense_compatible_formation(offensive_formation, 'mof')
-
-    defender = Defender()
-    placement_rule = PlacementRule()
-    placement_rule.name = 'Alignment'
-    placement_rule.parameters = [
-        {'name': 'Alignment', 'value': 'Seven'},
-        {'name': 'Direction', 'value': 'Wk'},
-        {'name': 'Strength Type', 'value': 'Receiver'},
-        {'name': 'Depth', 'value': 4}
-    ]
-    defender.placement_rules.append(placement_rule)
-
-
-    root = tk.Tk()
-    ParameterGui(root, placement_rule, 'Alignment', placement_rule_descriptors['Alignment']).pack(fill=tk.BOTH, expand=True)
-    def place_defender():
-        x, y = defender.place(defense_compat_formation)
-        print(x, y)
-        root.after(1000, place_defender)
-    place_defender()
-    root.mainloop()
-
-
-
 
 

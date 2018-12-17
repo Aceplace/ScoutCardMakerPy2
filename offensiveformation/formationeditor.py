@@ -77,21 +77,3 @@ class FormationEditor(tk.Frame):
             self.visual_editors[variation].visualize_formation(visualizer_formation)
 
 
-
-
-if __name__ == '__main__':
-    root = tk.Tk()
-
-    library_editor = FormationLibraryEditor(root)
-    library_editor.pack(fill=tk.BOTH, expand=True)
-    library_editor.library.load_library('temp.scml')
-    library_editor.refresh_library_listbox()
-
-    def on_close():
-        library_editor.library.save_library('temp.scml')
-        root.destroy()
-
-    root.protocol("WM_DELETE_WINDOW", on_close)
-
-    root.mainloop()
-

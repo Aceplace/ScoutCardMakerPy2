@@ -78,35 +78,3 @@ class DefensiveLibraryEditor(tk.Frame):
         self.library_lb.delete(0, tk.END)
         for defense in defenses:
             self.library_lb.insert(tk.END, defense)
-
-
-
-
-
-if __name__ == '__main__':
-    import defensiveformation.placementrules.apexplacementrule
-    import defensiveformation.placementrules.alignmentplacementrule
-    import defensiveformation.placementrules.overplacementrule
-
-    #from offensiveformation.formationlibrary import FormationLibrary
-    from library.alignmentlibrary import AlignmentLibrary
-
-    root = tk.Tk()
-
-    #formation_library = FormationLibrary()
-    #formation_library.load_library('temp.scml')
-    alignment_library = AlignmentLibrary()
-    alignment_library.load_library('tempalignmentlibrary.scml')
-    #alignment_library.formations = formation_library.formations
-
-    library_editor = DefenseLibraryEditor(root, alignment_library)
-    library_editor.pack(fill=tk.BOTH, expand=True)
-
-    def on_close():
-        library_editor.library.save_library('tempalignmentlibrary.scml')
-        root.destroy()
-
-    root.protocol("WM_DELETE_WINDOW", on_close)
-
-    root.mainloop()
-

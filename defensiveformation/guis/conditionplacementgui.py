@@ -126,27 +126,5 @@ class ConditionPlacementGui(tk.Frame):
             self.update_callback()
 
 
-if __name__=='__main__':
-    from defensiveformation.defense import Defender, ConditionSet
-    import defensiveformation.placementrules.apexplacementrule
-    import defensiveformation.placementrules.alignmentplacementrule
-    import defensiveformation.placementrules.overplacementrule
-
-    defender = Defender('t', 'T')
-
-    root = tk.Tk()
-
-    def callback():
-        print('Update')
-
-    ConditionPlacementGui(root, defender, callback).pack(fill=tk.BOTH, expand=True)
-
-    root.mainloop()
-
-
-
-
-
-
 
 

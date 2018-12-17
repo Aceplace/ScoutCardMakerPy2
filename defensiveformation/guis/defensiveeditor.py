@@ -1,14 +1,12 @@
 import tkinter as tk
 from tkinter import messagebox
 
-from defensiveformation.defense import Defense
 from defensiveformation.guis.conditionplacementgui import ConditionPlacementGui
 from misc.adapters import formation_to_visualizer, placed_defense_to_visualizer, \
     variation_to_defense_compatible_formation, variation_to_visualizer
 from misc.alignmentvisualizer import AlignmentVisualizer
 from misc.exceptions import LibraryException
 from offensiveformation.formation import Formation, get_default_variation
-from offensiveformation.formationlibrary import FormationLibrary
 
 
 class DefensiveEditor(tk.Frame):
@@ -130,18 +128,3 @@ class DefensiveEditor(tk.Frame):
     def checked_affected_defenders_box(self):
         self.current_defense.affected_defender_tags = self.get_affected_defenders()
         self.update_view()
-
-
-
-
-if __name__=='__main__':
-    import defensiveformation.placementrules.apexplacementrule
-    import defensiveformation.placementrules.alignmentplacementrule
-    import defensiveformation.placementrules.overplacementrule
-    root = tk.Tk()
-    library = FormationLibrary()
-    library.load_library('temp.scml')
-    DefensiveEditor(root, library).pack(fill=tk.BOTH, expand=True)
-
-    root.mainloop()
-
