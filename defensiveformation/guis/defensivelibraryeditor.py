@@ -6,9 +6,9 @@ from defensiveformation.guis.defensiveeditor import DefensiveEditor
 from misc.exceptions import LibraryException
 
 
-class DefenseLibraryEditor(tk.Frame):
+class DefensiveLibraryEditor(tk.Frame):
     def __init__(self, root, library):
-        super(DefenseLibraryEditor, self).__init__(root)
+        super(DefensiveLibraryEditor, self).__init__(root)
         self.current_defense = Defense()
         self.library = library
 
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     import defensiveformation.placementrules.alignmentplacementrule
     import defensiveformation.placementrules.overplacementrule
 
-    from offensiveformation.formationlibrary import FormationLibrary
+    #from offensiveformation.formationlibrary import FormationLibrary
     from library.alignmentlibrary import AlignmentLibrary
 
     root = tk.Tk()

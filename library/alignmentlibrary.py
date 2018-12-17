@@ -141,7 +141,7 @@ class AlignmentLibrary:
 
         return formation_variation
 
-    def get_composite_defense_variation(self, defense_name):
+    def get_composite_defense(self, defense_name):
         if not self.defenses:
             raise LibraryException('Defense Library Empty')
 

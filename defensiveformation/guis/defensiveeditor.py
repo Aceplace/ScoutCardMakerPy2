@@ -22,16 +22,24 @@ class DefensiveEditor(tk.Frame):
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(3, weight=1)
 
-        # Widgets to display and load a offensive formation
-        offensive_formation_frame = tk.Frame(self)
-        offensive_formation_frame.grid(row=0, column=0, sticky='W')
-        tk.Label(offensive_formation_frame, text='Offensive Formation:').pack()
-        self.offensive_formation_entry = tk.Entry(offensive_formation_frame)
+        # Widgets to display and load a composite offensive formation or composite defense
+        load_composite_frame = tk.Frame(self)
+        load_composite_frame.grid(row=0, column=0, sticky='W')
+        tk.Label(load_composite_frame, text='Offensive Formation:').pack()
+        self.offensive_formation_entry = tk.Entry(load_composite_frame)
         self.offensive_formation_entry.pack()
-        self.get_offensive_formation_btn = tk.Button(offensive_formation_frame, text='Get Offensive Formation',
+        self.get_offensive_formation_btn = tk.Button(load_composite_frame, text='Get Offensive Formation',
                                                      command=self.get_offensive_formation)
-        self.offensive_formation_entry.bind('<Return>', self.get_offensive_formation)
         self.get_offensive_formation_btn.pack()
+        self.offensive_formation_entry.bind('<Return>', self.get_offensive_formation)
+        tk.Label(load_composite_frame, text='Composite Defense:').pack()
+        self.composite_defense_entry = tk.Entry(load_composite_frame)
+        self.composite_defense_entry.pack()
+        self.get_composite_defense_btn = tk.Button(load_composite_frame, text='Get Composite Defense',
+                                                     command=self.get_composite_defense)
+        self.get_composite_defense_btn.pack()
+        self.composite_defense_entry.bind('<Return>', self.get_composite_defense)
+
 
         # Widgets for modifying affected defenders
         affected_defenders_frame = tk.Frame(self)
@@ -109,6 +117,13 @@ class DefensiveEditor(tk.Frame):
         try:
             self.current_formation_variation = self.library.get_composite_formation_variation(self.offensive_formation_entry.get(), 'm')
             self.update_view()
+        except LibraryException as e:
+            messagebox.showerror('Load Formation Error', e)
+
+    def get_composite_defense(self, *args):
+        try:
+            defense = self.library.get_composite_defense(self.composite_defense_entry.get())
+            self.load_defense(defense)
         except LibraryException as e:
             messagebox.showerror('Load Formation Error', e)
 
