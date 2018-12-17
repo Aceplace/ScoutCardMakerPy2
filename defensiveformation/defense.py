@@ -1,3 +1,5 @@
+import copy
+
 from defensiveformation.conditions import evaluate_condition
 from defensiveformation.placementruleutils import get_default_placement_rule
 
@@ -41,7 +43,6 @@ class Defender:
         if not found_suitable_condition:
             x , y = BAD_PLACEMENT
 
-        #x, y = self.placement_rules[0].place(formation)
         return x, y
 
 class Defense:
@@ -60,16 +61,9 @@ class Defense:
         self.defenders['q'] = Defender('q', 'Q')
         self.affected_defender_tags = []
 
-    def copy_defense_from_defense(self, copy_defense):
-        for tag, defender in copy_defense.defenders.items():
-            self.defenders[tag].placement_rule = copy_defense.defenders[tag].placement_rule
-        self.affected_defender_tags = []
-        for tag in copy_defense.affected_defender_tags:
-            self.affected_defender_tags.append(tag)
-
-    def override_defense(self, override_defense):
+    def override_defenders(self, override_defense):
         for tag in override_defense.affected_defender_tags:
-            self.defenders[tag].placement_rule = override_defense.defenders[tag].placement_rule
+            self.defenders[tag] = copy.deepcopy(override_defense.defenders[tag])
             if tag not in self.affected_defender_tags:
                 self.affected_defender_tags.append(tag)
 

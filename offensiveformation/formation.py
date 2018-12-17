@@ -30,9 +30,6 @@ class FormationVariation:
     def __init__(self):
         self.players = {}
 
-    def copy_variation_from_variation(self, variation):
-        self.players = copy.deepcopy(variation.players)
-
     def override_player_positions(self, override_variation, override_tags):
         for tag in override_tags:
             self.players[tag]['x'] = override_variation.players[tag]['x']

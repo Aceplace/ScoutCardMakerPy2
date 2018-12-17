@@ -12,10 +12,10 @@ from offensiveformation.formationlibrary import FormationLibrary
 
 
 class DefensiveEditor(tk.Frame):
-    def __init__(self, root, library):
+    def __init__(self, root, library, defense):
         super(DefensiveEditor,self).__init__(root)
         self.library = library
-        self.current_defense = Defense()
+        self.current_defense = defense
         self.current_defender = self.current_defense.defenders['c']
         self.current_formation_variation = get_default_variation('mof')
 
@@ -53,7 +53,7 @@ class DefensiveEditor(tk.Frame):
         defender_select_frame.grid(row=0, column=2, sticky='E')
 
         # Widgets for selecting defender
-        tk.Label(defender_select_frame, text='Current Defender :').grid(row=0, column=0, sticky='E')
+        tk.Label(defender_select_frame, text='Current Defender: ').grid(row=0, column=0, sticky='E')
         defender_names = ['T','N','A','P','W','M', 'B', 'S', 'C', 'F', 'Q']
         self.current_defender_value = tk.StringVar()
         self.current_defender_value.set(self.current_defender.label)
@@ -69,6 +69,12 @@ class DefensiveEditor(tk.Frame):
         # Widgets for condition placements
         self.condition_placement_frame = None
         self.change_placement_rule_gui()
+
+    def load_defense(self, defense):
+        self.current_defense = defense
+        self.set_affected_defender_checkboxes()
+        self.change_defender()
+        self.update_view()
 
 
     def change_defender(self, *args):

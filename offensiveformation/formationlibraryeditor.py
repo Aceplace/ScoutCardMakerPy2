@@ -52,13 +52,7 @@ class FormationLibraryEditor(tk.Frame):
             self.formation_name_entry.insert(0,listbox.get(index))
             self.current_formation = self.library.get_formation(listbox.get(index))
             self.formation_editor.load_formation(self.current_formation)
-            """for tag, cb_value in self.affected_players_cb_values.items():
-                cb_value.set(True if tag in self.current_formation.affected_player_tags else False)
 
-            for variation in ['mof', 'field', 'boundary']:
-                visualizer_formation = adapters.variation_to_visualizer(self.current_formation,
-                                                                        self.current_formation.variations[variation])
-                self.visual_editors[variation].visualize_formation(visualizer_formation)"""
 
     def save_formation(self, *args):
         try:
@@ -79,16 +73,6 @@ class FormationLibraryEditor(tk.Frame):
                 self.refresh_library_listbox()
             except LibraryException as e:
                 messagebox.showerror('Delete Formation Error', e)
-
-
-    """def load_composite_formation(self, *args):
-        try:
-            variation = self.library.get_composite_formation_variation(self.composite_name_entry.get(), 'm')
-            visualizer_formation = adapters.variation_to_visualizer(self.current_formation,
-                                                                    variation)
-            self.composite_visualizer.visualize_formation(visualizer_formation)
-        except LibraryException as e:
-            messagebox.showerror('Load Composite Error', e)"""
 
 
     def refresh_library_listbox(self):
