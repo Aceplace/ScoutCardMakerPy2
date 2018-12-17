@@ -32,6 +32,20 @@ def variation_to_visualizer(variation):
 
     return visualizer_formation
 
+def variation_to_powerpoint(variation):
+    PPPlayer = namedtuple('PPPlayer', 'label x y')
+    pp_players = {}
+    for tag, player in variation.players.items():
+        label = tag.upper()
+        x = player['x']
+        y = player['y']
+        pp_players[label] = PPPlayer(label=label, x=x, y=y)
+
+    PPFormation = namedtuple('PPFormation', 'players')
+    pp_formation = PPFormation(players=pp_players)
+
+    return pp_formation
+
 
 def formation_to_defense_compatible_formation(formation, variation_name):
     formation_variation = formation.variations[variation_name]

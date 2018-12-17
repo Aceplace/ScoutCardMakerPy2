@@ -105,9 +105,10 @@ class AlignmentLibrary:
             direction = 'RT' if matches[0] == 'RT' or matches[0] == 'RIGHT' else 'LT'
 
         # determine mof, field, boundary type
-        if hash == 'm':
+        hash = hash.upper()
+        if hash == 'M':
             variation_type = 'mof'
-        elif (hash == 'r' and  direction == 'RT') or (hash == 'L' and direction == 'LT'):
+        elif (hash == 'R' and  direction == 'RT') or (hash == 'L' and direction == 'LT'):
             variation_type = 'boundary'
         else:
             variation_type = 'field'
@@ -166,7 +167,6 @@ class AlignmentLibrary:
 
         if still_looking_for_match:
             raise LibraryException(sub_defense_name + ' doesn\'t exist in library. Create it.')
-
 
         return defense_to_return
 

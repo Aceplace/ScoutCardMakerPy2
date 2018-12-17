@@ -6,3 +6,6 @@ class LibraryException(ScoutCardMakerException):
 
 class PlacementException(ScoutCardMakerException):
     pass
+
+class ExportException(ScoutCardMakerException):
+    pass

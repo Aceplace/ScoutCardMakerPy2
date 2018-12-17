@@ -5,7 +5,9 @@ import os
 
 from defensiveformation.guis.defensivelibraryeditor import DefensiveLibraryEditor
 from library.alignmentlibrary import AlignmentLibrary
-from misc.exceptions import LibraryException
+from misc.excelscriptparser import get_script_from_excel_file
+from misc.exceptions import LibraryException, ExportException
+from misc.powerpointexporter import export_to_powerpoint
 from offensiveformation.formationlibraryeditor import FormationLibraryEditor
 
 
@@ -116,7 +118,32 @@ class App(tk.Tk):
                 messagebox.showerror('Save Library Error', e)
 
     def create_scout_cards(self):
-        pass
+        try:
+            if self.last_import_script_location and os.path.isdir(self.last_import_script_location):
+                initial_dir = self.last_import_script_location
+            else:
+                initial_dir = os.getcwd()
+            script_filename = filedialog.askopenfilename(initialdir=initial_dir, title="Select Script",
+                                                         filetypes=(("Excel", "*.xlsx"),))
+            if script_filename:
+                self.last_import_script_location = os.path.dirname(script_filename)
+                excel_play_script = get_script_from_excel_file(self, script_filename)
+
+                if self.last_export_powerpoint_location and os.path.isdir(self.last_export_powerpoint_location):
+                    initial_dir = self.last_export_powerpoint_location
+                else:
+                    initial_dir = os.getcwd()
+
+                cards_filename = filedialog.asksaveasfilename(initialdir=initial_dir,
+                                                              title='Create Scout Cards',
+                                                              filetypes=(('Powerpoint', '*.pptx'),),
+                                                              defaultextension='.pptx')
+
+                if cards_filename:
+                    self.last_export_powerpoint_location = os.path.dirname(cards_filename)
+                    export_to_powerpoint(cards_filename, excel_play_script, self.library)
+        except ExportException as e:
+            messagebox.showerror('Create Scout Cards Error', e)
 
     def change_view(self):
         if self.viewmenu_option.get() == 1:

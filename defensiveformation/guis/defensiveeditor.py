@@ -30,6 +30,14 @@ class DefensiveEditor(tk.Frame):
                                                      command=self.get_offensive_formation)
         self.get_offensive_formation_btn.pack()
         self.offensive_formation_entry.bind('<Return>', self.get_offensive_formation)
+
+        tk.Label(load_composite_frame, text='Hash:').pack()
+        self.offense_ball_placement_value = tk.StringVar()
+        self.offense_ball_placement_value.set('m')
+        tk.Radiobutton(load_composite_frame, text='M', value='m', variable=self.offense_ball_placement_value).pack()
+        tk.Radiobutton(load_composite_frame, text='L', value='l', variable=self.offense_ball_placement_value).pack()
+        tk.Radiobutton(load_composite_frame, text='R', value='r', variable=self.offense_ball_placement_value).pack()
+
         tk.Label(load_composite_frame, text='Composite Defense:').pack()
         self.composite_defense_entry = tk.Entry(load_composite_frame)
         self.composite_defense_entry.pack()
@@ -113,7 +121,8 @@ class DefensiveEditor(tk.Frame):
 
     def get_offensive_formation(self, *args):
         try:
-            self.current_formation_variation = self.library.get_composite_formation_variation(self.offensive_formation_entry.get(), 'm')
+            self.current_formation_variation = self.library.get_composite_formation_variation(self.offensive_formation_entry.get(),
+                                                                                              self.offense_ball_placement_value.get())
             self.update_view()
         except LibraryException as e:
             messagebox.showerror('Load Formation Error', e)
