@@ -119,7 +119,7 @@ def add_wide_formation_and_defense_slide(play, slide, library):
 
         if formation and defense_name:
             composite_defense = library.get_composite_defense(defense_name)
-            placed_defense = composite_defense.get_placed_defenders(variation_to_defense_compatible_formation(formation))
+            placed_defense = composite_defense.get_affected_placed_defenders(variation_to_defense_compatible_formation(formation))
             for (tag, label, defender_x, defender_y) in placed_defense:
                 x, y = player_coordinates_to_powerpoint(defender_x, defender_y * -1)
                 text_box = slide.shapes.add_textbox(x - DEFENDER_WIDTH / 2, y - DEFENDER_HEIGHT / 2, DEFENDER_WIDTH, DEFENDER_HEIGHT)
@@ -154,7 +154,7 @@ def add_tight_formation_and_defense_slide(play, slide, library):
 
         if formation and defense_name:
             composite_defense = library.get_composite_defense(defense_name)
-            placed_defense = composite_defense.get_placed_defenders(variation_to_defense_compatible_formation(formation))
+            placed_defense = composite_defense.get_affected_placed_defenders(variation_to_defense_compatible_formation(formation))
             for (tag, label, defender_x, defender_y) in placed_defense:
                 if defender_x < -20 or defender_x > 20 or defender_y > 8:
                     continue

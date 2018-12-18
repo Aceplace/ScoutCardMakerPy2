@@ -3,7 +3,7 @@ import copy
 from defensiveformation.conditions import evaluate_condition
 from defensiveformation.placementruleutils import get_default_placement_rule
 
-BAD_PLACEMENT = (55, 15)
+BAD_PLACEMENT = (52, 14)
 
 class ConditionSet:
     def __init__(self):
@@ -72,4 +72,12 @@ class Defense:
         for tag, defender in self.defenders.items():
             x, y = defender.place(formation)
             placed_defenders.append((defender.tag, defender.label, x, y))
+        return placed_defenders
+
+    def get_affected_placed_defenders(self, formation):
+        placed_defenders = []
+        for tag, defender in self.defenders.items():
+            if tag in self.affected_defender_tags:
+                x, y = defender.place(formation)
+                placed_defenders.append((defender.tag, defender.label, x, y))
         return placed_defenders

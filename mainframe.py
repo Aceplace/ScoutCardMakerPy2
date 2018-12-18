@@ -73,6 +73,7 @@ class App(tk.Tk):
 
     def new_library(self):
         self.library = AlignmentLibrary()
+        self.current_library_filename = ''
         self.frames[FormationLibraryEditor].library = self.library
         self.frames[DefensiveLibraryEditor].library = self.library
         self.frames[FormationLibraryEditor].refresh_library_listbox()
@@ -80,7 +81,8 @@ class App(tk.Tk):
 
     def open_library(self):
         try:
-            library_filename = filedialog.askopenfilename(initialdir=os.getcwd(), title="Select alignment library", filetypes=(("Formation Library", "*.scml"),))
+            library_filename = filedialog.askopenfilename(initialdir=os.getcwd(), title="Select alignment library",
+                                                          filetypes=(("Formation Library", "*.scml"),))
             if library_filename:
                 self.library.load_library(library_filename)
                 self.frames[FormationLibraryEditor].refresh_library_listbox()
@@ -162,6 +164,12 @@ class App(tk.Tk):
         preferences = {'mainframe': self.get_prefs_as_dict()}
         with open('preferences.json', 'w') as file:
             json.dump(preferences, file, indent=2)
+
+        if self.current_library_filename:
+            responded_yes = messagebox.askyesno('Save Library', 'Save library before exiting?')
+            if responded_yes:
+                self.library.save_library(self.current_library_filename)
+
         self.destroy()
 
 
