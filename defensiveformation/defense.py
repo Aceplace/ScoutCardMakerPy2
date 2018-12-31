@@ -11,16 +11,17 @@ class ConditionSet:
         self.connectors = ['first']
 
     def condition_set_satisfied(self, formation):
-        one_condition_unsatisfied = False
-        for condition, connector in zip(self.conditions, self.connectors):
-            if connector == 'or' and not one_condition_unsatisfied:
-                return True
-            elif connector == 'or':
-                one_condition_unsatisfied = False
+        evaluated_conditions = [evaluate_condition(condition,formation) for condition in self.conditions]
+        condition_set_expression = ''
+        for evaluated_condition, connector in zip(evaluated_conditions, self.connectors):
+            if connector != 'first':
+                condition_set_expression += ' ' + connector + ' ' + str(evaluated_condition)
+            else:
+                condition_set_expression += '(' + str(evaluated_condition)
+        condition_set_expression += ')'
+        condition_set_satisfied = eval(condition_set_expression)
+        return condition_set_satisfied
 
-            if not evaluate_condition(condition, formation):
-                one_condition_unsatisfied = True
-        return not one_condition_unsatisfied
 
     def __repr__(self):
         return f'ConditionSet{{Conditions: {self.conditions}, Connectors: {self.connectors}}}'

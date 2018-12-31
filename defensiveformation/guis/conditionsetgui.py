@@ -33,7 +33,7 @@ class ConditionSetGui(tk.Frame):
         num_conditions_range = list(range(len(self.condition_set.conditions)))
         conditions = self.condition_set.conditions
         connectors = self.condition_set.connectors
-        connector_options = ['and', 'or']
+        connector_options = ['and', 'or', ') or (', ') and (']
         for i, condition, connector in zip(num_conditions_range, conditions, connectors):
             if i != 0:
                 connector_value = tk.StringVar()
