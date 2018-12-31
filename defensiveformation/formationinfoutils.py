@@ -21,8 +21,7 @@ def get_align_side(direction, strength_type, formation):
         else:
             return 'LEFT'
 
-def get_receiver_strength(formation, default_strength='RIGHT'):
-    #first check for strength is absolute number of receivers (defined as outside the tackle)
+def get_direction_with_most_receivers(formation):
     receivers_to_left_of_lt = [player for tag, player in formation.players.items() if player.x < formation.lt.x]
     receivers_to_right_of_rt = [player for tag, player in formation.players.items() if player.x > formation.rt.x]
 
@@ -30,8 +29,9 @@ def get_receiver_strength(formation, default_strength='RIGHT'):
         return 'LEFT'
     if len(receivers_to_left_of_lt) < len(receivers_to_right_of_rt):
         return 'RIGHT'
+    return None
 
-    #next check is if one side has more detached receivers then the other side
+def get_direction_with_most_detached_receivers(formation):
     attached_receivers_to_left = get_number_of_attached_receivers(formation, 'LEFT')
     attached_receivers_to_right = get_number_of_attached_receivers(formation, 'RIGHT')
 
@@ -39,8 +39,9 @@ def get_receiver_strength(formation, default_strength='RIGHT'):
         return 'LEFT'
     if attached_receivers_to_left > attached_receivers_to_right:
         return 'RIGHT'
+    return None
 
-    #next is to consider backfield
+def get_direction_with_most_offset_backs(formation):
     offset_backs_to_left = get_number_of_offset_backs(formation, 'LEFT')
     offset_back_to_right = get_number_of_offset_backs(formation, 'RIGHT')
 
@@ -48,6 +49,26 @@ def get_receiver_strength(formation, default_strength='RIGHT'):
         return 'LEFT'
     if offset_backs_to_left < offset_back_to_right:
         return 'RIGHT'
+    return None
+
+def get_receiver_strength(formation, default_strength='RIGHT'):
+
+    direction = get_direction_with_most_receivers(formation)
+    if direction:
+        return direction
+
+    if formation.hash == 'lt':
+        return 'RIGHT'
+    elif formation.hash == 'rt':
+        return 'LEFT'
+
+    direction = get_direction_with_most_detached_receivers(formation)
+    if direction:
+        return direction
+
+    direction = get_direction_with_most_offset_backs(formation)
+    if direction:
+        return direction
 
     return default_strength
 
@@ -91,9 +112,9 @@ def get_number_of_attached_receivers(formation, direction):
 def get_number_of_offset_backs(formation, direction):
     number_of_attached_receivers = 0
     if direction == 'LEFT':
-        return len([player for tag, player in formation.players.items() if player.x >= formation.lt.x and player.x < formation.center.x])
+        return len([player for tag, player in formation.players.items() if player.x >= formation.lt.x and player.x < formation.c.x])
     else:
-        return len([player for tag, player in formation.players.items() if player.x <= formation.rt.x and player.x > formation.center.x])
+        return len([player for tag, player in formation.players.items() if player.x <= formation.rt.x and player.x > formation.c.x])
 
 
 def get_first_attached(formation, direction):
