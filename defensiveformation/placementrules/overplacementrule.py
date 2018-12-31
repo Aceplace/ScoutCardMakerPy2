@@ -11,13 +11,6 @@ over_parameters_descriptor = [
         ]
     },
     {
-        'name':'Leverage',
-        'type':'option',
-        'options':[
-            'Inside', 'Head Up', 'Outside'
-        ]
-    },
-    {
         'name':'Direction',
         'type':'option',
         'options':[
@@ -32,6 +25,12 @@ over_parameters_descriptor = [
         ]
     },
     {
+        'name':'Offset',
+        'type':'number',
+        'min': -10,
+        'max': 10
+    },
+    {
         'name':'Depth',
         'type':'number',
         'min': 1,
@@ -42,7 +41,7 @@ over_parameters_descriptor = [
 
 over_default_parameters = [
     {'name': 'Over', 'value': 'Number One'},
-    {'name': 'Leverage', 'value': 'Head Up'},
+    {'name': 'Offset', 'value': 0},
     {'name': 'Direction', 'value': 'Str'},
     {'name': 'Strength Type', 'value': 'Attached'},
     {'name': 'Depth', 'value': 1}
@@ -51,7 +50,7 @@ over_default_parameters = [
 
 def over_placer(formation, placement_rule):
     over = placement_rule.get_parameter_value('Over')
-    leverage = placement_rule.get_parameter_value('Leverage')
+    offset = placement_rule.get_parameter_value('Offset')
     direction = placement_rule.get_parameter_value('Direction')
     strength_type = placement_rule.get_parameter_value('Strength Type')
     depth = placement_rule.get_parameter_value('Depth')
@@ -59,12 +58,7 @@ def over_placer(formation, placement_rule):
 
     align_side = get_align_side(direction, strength_type, formation)
     receivers_outside_across = get_receivers_outside_across(formation, 'LEFT' if align_side == 'LEFT' else 'RIGHT')
-    if leverage == 'Inside':
-        leverage_adjust = 1 if align_side == 'LEFT' else -1
-    elif leverage == 'Outside':
-        leverage_adjust = 1 if align_side == 'RIGHT' else -1
-    else:
-        leverage_adjust = 0
+    leverage_adjust = offset if align_side == 'RIGHT' else -offset
 
     if over == 'Number One':
         x = receivers_outside_across[0].x + leverage_adjust
