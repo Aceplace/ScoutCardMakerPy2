@@ -59,8 +59,10 @@ class ConditionPlacementGui(tk.Frame):
         PlacementRuleGui(condition_set_placement_frame, placement_rule, self.update_callback).pack(side=tk.RIGHT)
         condition_set_placement_frame.grid(row=1, column=0, columnspan=3, sticky='WE')
 
-        condition_placement_sub_gui.grid(row=0, column=index+1, sticky='NS')
-        self.condition_placement_sub_guis.append(condition_placement_sub_gui)
+        self.condition_placement_sub_guis.insert(index, condition_placement_sub_gui)
+        #regrid the sub guis after inserting
+        for index, condition_placement_sub_gui in enumerate(self.condition_placement_sub_guis):
+            condition_placement_sub_gui.grid(row=0, column=index + 1, sticky='NS')
 
     def raise_priority(self, condition_set):
         for index in range(1, len(self.defender.condition_sets)):
@@ -118,9 +120,9 @@ class ConditionPlacementGui(tk.Frame):
     def add_condition_set(self):
         new_condition_set = ConditionSet()
         new_placement_rule = get_default_placement_rule()
-        self.defender.condition_sets.append(new_condition_set)
-        self.defender.placement_rules.append(new_placement_rule)
-        self.create_condition_placement_sub_gui(len(self.defender.condition_sets) - 1, new_condition_set, new_placement_rule)
+        self.defender.condition_sets.insert(0, new_condition_set)
+        self.defender.placement_rules.insert(0, new_placement_rule)
+        self.create_condition_placement_sub_gui(0, new_condition_set, new_placement_rule)
 
         if self.update_callback:
             self.update_callback()
