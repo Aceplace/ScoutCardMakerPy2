@@ -174,9 +174,7 @@ class App(tk.Tk):
 
 
 if __name__=='__main__':
-    import defensiveformation.placementrules.apexplacementrule
-    import defensiveformation.placementrules.alignmentplacementrule
-    import defensiveformation.placementrules.overplacementrule
+    import defensiveformation.placementrules.allplacementrules
     import json
     try:
         with open('preferences.json', 'r') as file:
