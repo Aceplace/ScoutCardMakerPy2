@@ -111,7 +111,7 @@ class ConditionSetGui(tk.Frame):
 
     def reset(self, *args):
         self.condition_set.conditions = ['Default']
-        self.condition_set.connectors = ['First']
+        self.condition_set.connectors = ['first']
         self.create_conditions_frame()
         if self.update_callback:
             self.update_callback()
