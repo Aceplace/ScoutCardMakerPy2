@@ -135,13 +135,25 @@ def add_tight_formation_and_defense_slide(play, slide, library):
 
     formation = None
     try:
+        x_min = -25
+        x_max = 25
+        y_max = 8
+        offset = 0
         if formation_name:
             formation = library.get_composite_formation_variation(formation_name, play['Hash'])
+            if formation.hash == 'lt':
+                x_min -= 18
+                x_max -= 18
+                offset = 18
+            elif formation.hash == 'rt':
+                x_min += 18
+                x_max += 18
+                offset = -18
             pp_formation = variation_to_powerpoint(formation)
             for label, player in pp_formation.players.items():
-                if player.x < -20 or player.x > 20:
+                if player.x < x_min or player.x > x_max:
                     continue
-                x, y = player_coordinates_to_powerpoint(player.x, player.y, is_tight_view=True)
+                x, y = player_coordinates_to_powerpoint(player.x + offset, player.y, is_tight_view=True)
                 shape = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.OVAL, x - TIGHT_PLAYER_WIDTH / 2, y - TIGHT_PLAYER_HEIGHT / 2,
                                                TIGHT_PLAYER_WIDTH, TIGHT_PLAYER_HEIGHT)
                 shape.fill.solid()
@@ -156,9 +168,9 @@ def add_tight_formation_and_defense_slide(play, slide, library):
             composite_defense = library.get_composite_defense(defense_name)
             placed_defense = composite_defense.get_affected_placed_defenders(variation_to_defense_compatible_formation(formation))
             for (tag, label, defender_x, defender_y) in placed_defense:
-                if defender_x < -20 or defender_x > 20 or defender_y > 8:
+                if defender_x < x_min or defender_x > x_max or defender_y > y_max:
                     continue
-                x, y = player_coordinates_to_powerpoint(defender_x, defender_y * -1, is_tight_view=True)
+                x, y = player_coordinates_to_powerpoint(defender_x + offset, defender_y * -1, is_tight_view=True)
                 text_box = slide.shapes.add_textbox(x - TIGHT_DEFENDER_WIDTH / 2, y - TIGHT_DEFENDER_HEIGHT / 2, TIGHT_DEFENDER_WIDTH,
                                                     TIGHT_DEFENDER_HEIGHT)
                 text_box.text_frame.text = label
