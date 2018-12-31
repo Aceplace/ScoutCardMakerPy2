@@ -47,30 +47,6 @@ def variation_to_powerpoint(variation):
     return pp_formation
 
 
-def formation_to_defense_compatible_formation(formation, variation_name):
-    formation_variation = formation.variations[variation_name]
-    FormationPlayer = namedtuple('FormationPlayer', 'tag label x y')
-    formation_players = {}
-    for player in formation.players.values():
-        tag = player.tag
-        label = player.label
-        x = formation_variation.players[tag]['x']
-        y = formation_variation.players[tag]['y']
-        formation_players[tag] = FormationPlayer(tag=tag, label=label, x=x, y=y)
-
-    DefenseCompatibleFormation = namedtuple('DefenseCompatibleFormation', 'players q lt lg c rt rg')
-    defensive_compatible_formation = DefenseCompatibleFormation(
-        players=formation_players,
-        q=formation_players['q'],
-        lt=formation_players['lt'],
-        lg=formation_players['lg'],
-        c=formation_players['c'],
-        rg=formation_players['rg'],
-        rt=formation_players['rt']
-    )
-
-    return defensive_compatible_formation
-
 def variation_to_defense_compatible_formation(variation):
     FormationPlayer = namedtuple('FormationPlayer', 'tag label x y')
     formation_players = {}
@@ -80,7 +56,7 @@ def variation_to_defense_compatible_formation(variation):
         y = player['y']
         formation_players[tag] = FormationPlayer(tag=tag, label=label, x=x, y=y)
 
-    DefenseCompatibleFormation = namedtuple('DefenseCompatibleFormation', 'players t, h, x, y, z, q lt lg c rt rg')
+    DefenseCompatibleFormation = namedtuple('DefenseCompatibleFormation', 'players t, h, x, y, z, q lt lg c rt rg hash')
     defensive_compatible_formation = DefenseCompatibleFormation(
         players=formation_players,
         t=formation_players['t'],
@@ -93,7 +69,8 @@ def variation_to_defense_compatible_formation(variation):
         lg=formation_players['lg'],
         c=formation_players['c'],
         rg=formation_players['rg'],
-        rt=formation_players['rt']
+        rt=formation_players['rt'],
+        hash=variation.hash
     )
 
     return defensive_compatible_formation

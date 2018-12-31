@@ -29,6 +29,7 @@ class Formation:
 class FormationVariation:
     def __init__(self):
         self.players = {}
+        self.hash = 'm'
 
     def override_player_positions(self, override_variation, override_tags):
         for tag in override_tags:
@@ -40,6 +41,10 @@ class FormationVariation:
             player['x'] *= -1
         self.players['lt']['x'], self.players['rt']['x'] = self.players['rt']['x'], self.players['lt']['x']
         self.players['lg']['x'], self.players['rg']['x'] = self.players['rg']['x'], self.players['lg']['x']
+        if self.hash == 'lt':
+            self.hash = 'rt'
+        elif self.hash == 'rt':
+            self.hash = 'lt'
 
 def get_default_variation(type):
     variation = FormationVariation()
@@ -55,6 +60,7 @@ def get_default_variation(type):
         variation.players['y'] = {'x': 12, 'y': 1}
         variation.players['z'] = {'x': 35, 'y': 2}
         variation.players['q'] = {'x': 0, 'y': 2}
+        variation.hash='m'
     elif type == 'field':
         variation.players['lt'] = {'x': -26, 'y': 1}
         variation.players['lg'] = {'x': -22, 'y': 1}
@@ -67,6 +73,7 @@ def get_default_variation(type):
         variation.players['y'] = {'x': -6, 'y': 1}
         variation.players['z'] = {'x': 35, 'y': 2}
         variation.players['q'] = {'x': -18, 'y': 2}
+        variation.hash = 'lt'
     else:
         variation.players['lt'] = {'x': 10, 'y': 1}
         variation.players['lg'] = {'x': 14, 'y': 1}
@@ -79,4 +86,5 @@ def get_default_variation(type):
         variation.players['y'] = {'x': 30, 'y': 1}
         variation.players['z'] = {'x': 35, 'y': 2}
         variation.players['q'] = {'x': 18, 'y': 2}
+        variation.hash = 'rt'
     return variation
