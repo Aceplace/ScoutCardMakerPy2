@@ -35,6 +35,10 @@ condition_implementations ={
     'Surface Structure/Rec Wk/Indy' : lambda formation: surface_structure_condition(formation, 'Str', 'Receiver', ['Indy']),
     'Surface Structure/Rec Wk/Indy Wing' : lambda formation: surface_structure_condition(formation, 'Str', 'Receiver', ['Indy Wing']),
     'Surface Structure/Rec Wk/Tight Bunch' : lambda formation: surface_structure_condition(formation, 'Str', 'Receiver', ['Tight Bunch']),
+    'Ball Placement/MOF': lambda formation: ball_placement_condition(formation, 'MOF'),
+    'Ball Placement/Hash': lambda formation: ball_placement_condition(formation, 'Hash'),
+    'Ball Placement/Left Hash': lambda formation: ball_placement_condition(formation, 'Left Hash'),
+    'Ball Placement/Right Hash': lambda formation: ball_placement_condition(formation, 'Right Hash'),
 }
 
 def formation_structure_condition(formation, formation_structure):
@@ -46,6 +50,16 @@ def surface_structure_condition(formation, direction, strength_type, acceptable_
 
     surface_structures = get_surface_structures(formation, direction_str)
     return any(structure in acceptable_surface_structures for structure in surface_structures)
+
+def ball_placement_condition(formation, ball_placement_type):
+    if ball_placement_type == 'MOF':
+        return formation.hash == 'm'
+    if ball_placement_type == 'Hash':
+        return formation.hash != 'm'
+    if ball_placement_type == 'Left Hash':
+        return formation.hash == 'lt'
+    if ball_placement_type == 'Right Hash':
+        return formation.hash == 'rt'
 
 def evaluate_condition(condition, formation):
     return condition_implementations[condition](formation)
