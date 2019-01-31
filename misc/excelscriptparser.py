@@ -20,7 +20,10 @@ def get_script_from_excel_file(root, file_name):
         for index in range(1, sheet.nrows):
             row_values = sheet.row_values(index)
             play_info = {}
-            play_info['Number'] = int(row_values[0])
+            try:
+                play_info['Number'] = int(row_values[0])
+            except ValueError:
+                play_info['Number'] = row_values[0]
             play_info['Hash'] = row_values[1]
             play_info['Dnd'] = row_values[2]
             play_info['Formation'] = row_values[3]
