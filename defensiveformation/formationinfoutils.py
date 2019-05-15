@@ -7,8 +7,14 @@ def get_align_side(direction, strength_type, formation):
 
     if strength_type == 'Attached':
         strength_direction = get_attached_receiver_strength(formation)
-    else:
+    elif strength_type == 'Receiver':
         strength_direction = get_receiver_strength(formation)
+    elif strength_type == "Back":
+        strength_direction = get_back_strength(formation)
+    elif strength_type == "Opposite of Attached":
+        strength_direction = get_opposite_attached_receiver_strength(formation)
+    else:
+        strength_direction = get_opposite_back_strength(formation)
 
     if strength_direction == 'LEFT':
         if direction == 'Str':
@@ -51,6 +57,21 @@ def get_direction_with_most_offset_backs(formation):
         return 'RIGHT'
     return None
 
+def get_back_strength(formation, default_strength='RIGHT'):
+    direction = get_direction_with_most_offset_backs(formation)
+    if direction is None:
+        return get_receiver_strength(formation, default_strength)
+    return direction
+
+def get_opposite_back_strength(formation, default_strength='RIGHT'):
+    direction = get_direction_with_most_offset_backs(formation)
+    if direction == 'LEFT':
+        return 'RIGHT'
+    elif direction == 'RIGHT':
+        return 'LEFT'
+    else:
+        return get_receiver_strength(formation, default_strength)
+
 def get_receiver_strength(formation, default_strength='RIGHT'):
 
     direction = get_direction_with_most_receivers(formation)
@@ -81,6 +102,17 @@ def get_attached_receiver_strength(formation, default_strength='RIGHT'):
         return 'LEFT'
     if attached_receivers_to_left < attached_receivers_to_right:
         return 'RIGHT'
+
+    return get_receiver_strength(formation, default_strength)
+
+def get_opposite_attached_receiver_strength(formation, default_strength='RIGHT'):
+    attached_receivers_to_left = get_number_of_attached_receivers(formation, 'LEFT')
+    attached_receivers_to_right = get_number_of_attached_receivers(formation, 'RIGHT')
+
+    if attached_receivers_to_left > attached_receivers_to_right:
+        return 'RIGHT'
+    if attached_receivers_to_left < attached_receivers_to_right:
+        return 'LEFT'
 
     return get_receiver_strength(formation, default_strength)
 

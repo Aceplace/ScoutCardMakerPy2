@@ -14,14 +14,14 @@ alignment_parameters_descriptor = [
         'name':'Direction',
         'type':'option',
         'options':[
-            'Str','Wk'
+            'Str','Wk', 'Right', 'Left'
         ]
     },
     {
         'name':'Strength Type',
         'type':'option',
         'options':[
-            'Attached','Receiver'
+            'Attached','Receiver','Back','Opposite of Attached','Opposite of Back'
         ]
     },
     {
@@ -46,7 +46,12 @@ def alignment_placer(formation, placement_rule):
     depth = placement_rule.get_parameter_value('Depth')
     y = depth
 
-    align_side = get_align_side(direction, strength_type, formation)
+    if direction == 'Left':
+        align_side = 'LEFT'
+    elif direction == 'Right':
+        align_side = 'RIGHT'
+    else:
+        align_side = get_align_side(direction, strength_type, formation)
     # modifier is affected by what side defender is on and whether they are inside or outside
     offset = -1 if 'I' in alignment else 1
     offset = offset if align_side == 'RIGHT' else offset * -1
