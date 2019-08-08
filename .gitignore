@@ -6,3 +6,5 @@ test.py
 *.xlsx
 *.pptx
 preferences.json
+dist/
+venv/
