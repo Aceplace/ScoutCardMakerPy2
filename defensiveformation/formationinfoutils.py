@@ -1,19 +1,23 @@
 ATTACH_DISTANCE = 6
 GHOST_DISTANCE = 4
 
-def get_align_side(direction, strength_type, formation):
+def get_align_side(direction, align_type, formation):
     if direction == 'LEFT' or direction == 'RIGHT':
         return direction
 
-    if strength_type == 'Attached':
-        strength_direction = get_attached_receiver_strength(formation)
-    elif strength_type == 'Receiver':
+    if align_type == 'Attached':
+        strength_direction = get_attached_strength(formation)
+    elif align_type == 'Receiver':
         strength_direction = get_receiver_strength(formation)
-    elif strength_type == "Back":
+    elif align_type == 'Back':
         strength_direction = get_back_strength(formation)
-    elif strength_type == "Opposite of Attached":
-        strength_direction = get_opposite_attached_receiver_strength(formation)
-    else:
+    elif align_type == 'Opposite of Attached':
+        strength_direction = get_opposite_attached_strength(formation)
+    elif align_type == 'Opposite of Receiver':
+        strength_direction = get_opposite_receiver_strength(formation)
+    elif align_type == 'Opposite Attached -> Opposite Receiver':
+        strength_direction = get_opposite_attached_and_receiver_strength(formation)
+    else: #Opposite of back strength
         strength_direction = get_opposite_back_strength(formation)
 
     if strength_direction == 'LEFT':
@@ -93,8 +97,15 @@ def get_receiver_strength(formation, default_strength='RIGHT'):
 
     return default_strength
 
+def get_opposite_receiver_strength(formation, default_strength='RIGHT'):
+    receiver_strength_direction = get_receiver_strength(formation, default_strength)
 
-def get_attached_receiver_strength(formation, default_strength='RIGHT'):
+    if receiver_strength_direction == 'LEFT':
+        return 'RIGHT'
+    else:
+        return 'LEFT'
+
+def get_attached_strength(formation, default_strength='RIGHT'):
     attached_receivers_to_left = get_number_of_attached_receivers(formation, 'LEFT')
     attached_receivers_to_right = get_number_of_attached_receivers(formation, 'RIGHT')
 
@@ -105,7 +116,7 @@ def get_attached_receiver_strength(formation, default_strength='RIGHT'):
 
     return get_receiver_strength(formation, default_strength)
 
-def get_opposite_attached_receiver_strength(formation, default_strength='RIGHT'):
+def get_opposite_attached_strength(formation, default_strength='RIGHT'):
     attached_receivers_to_left = get_number_of_attached_receivers(formation, 'LEFT')
     attached_receivers_to_right = get_number_of_attached_receivers(formation, 'RIGHT')
 
@@ -115,6 +126,17 @@ def get_opposite_attached_receiver_strength(formation, default_strength='RIGHT')
         return 'LEFT'
 
     return get_receiver_strength(formation, default_strength)
+
+def get_opposite_attached_and_receiver_strength(formation, default_strength='RIGHT'):
+    attached_receivers_to_left = get_number_of_attached_receivers(formation, 'LEFT')
+    attached_receivers_to_right = get_number_of_attached_receivers(formation, 'RIGHT')
+
+    if attached_receivers_to_left > attached_receivers_to_right:
+        return 'RIGHT'
+    if attached_receivers_to_left < attached_receivers_to_right:
+        return 'LEFT'
+
+    return get_opposite_receiver_strength(formation, default_strength)
 
 def get_number_of_receivers(formation, direction):
     if direction == 'LEFT':
@@ -263,14 +285,56 @@ def get_surface_structures(formation, direction):
         surface_structure.append('Zero Receivers')
     elif number_of_receivers == 1:
         surface_structure.append('One Receiver')
+        surface_structure.append('At least One Receiver')
     elif number_of_receivers == 2:
         surface_structure.append('Two Receivers')
+        surface_structure.append('At least One Receiver')
+        surface_structure.append('At least Two Receivers')
     elif number_of_receivers == 3:
         surface_structure.append('Three Receivers')
+        surface_structure.append('At least One Receiver')
+        surface_structure.append('At least Two Receivers')
+        surface_structure.append('At least Three Receivers')
     elif number_of_receivers == 4:
         surface_structure.append('Four Receivers')
+        surface_structure.append('At least One Receiver')
+        surface_structure.append('At least Two Receivers')
+        surface_structure.append('At least Three Receivers')
+        surface_structure.append('At least Four Receivers')
     elif number_of_receivers == 5:
         surface_structure.append('Five Receivers')
+        surface_structure.append('At least One Receiver')
+        surface_structure.append('At least Two Receivers')
+        surface_structure.append('At least Three Receivers')
+        surface_structure.append('At least Four Receivers')
+
+    if number_of_attached_receivers == 0:
+        surface_structure.append('Zero Attached')
+    elif number_of_attached_receivers == 1:
+        surface_structure.append('One Attached')
+        surface_structure.append('At least One Attached')
+    elif number_of_attached_receivers == 2:
+        surface_structure.append('Two Attached')
+        surface_structure.append('At least One Attached')
+        surface_structure.append('At least Two Attached')
+    elif number_of_attached_receivers == 3:
+        surface_structure.append('Three Attached')
+        surface_structure.append('At least One Attached')
+        surface_structure.append('At least Two Attached')
+        surface_structure.append('At least Three Attached')
+    elif number_of_attached_receivers == 4:
+        surface_structure.append('Four Attached')
+        surface_structure.append('At least One Attached')
+        surface_structure.append('At least Two Attached')
+        surface_structure.append('At least Three Attached')
+        surface_structure.append('At least Four Attached')
+    elif number_of_attached_receivers == 5:
+        surface_structure.append('Five Attached')
+        surface_structure.append('At least One Attached')
+        surface_structure.append('At least Two Attached')
+        surface_structure.append('At least Three Attached')
+        surface_structure.append('At least Four Attached')
+
 
     if number_of_receivers == 1 and number_of_attached_receivers == 1:
         surface_structure.append('Nub')

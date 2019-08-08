@@ -21,7 +21,8 @@ alignment_parameters_descriptor = [
         'name':'Strength Type',
         'type':'option',
         'options':[
-            'Attached','Receiver','Back','Opposite of Attached','Opposite of Back'
+            'Attached','Receiver','Back','Opposite of Attached','Opposite of Receiver','Opposite of Back',
+            'Opposite Attached -> Opposite Receiver'
         ]
     },
     {
