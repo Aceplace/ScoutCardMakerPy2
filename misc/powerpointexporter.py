@@ -2,6 +2,7 @@ import os
 
 from pptx import Presentation
 from pptx.enum.shapes import MSO_CONNECTOR_TYPE, MSO_AUTO_SHAPE_TYPE
+from pptx.enum.text import PP_PARAGRAPH_ALIGNMENT
 from pptx.dml.color import RGBColor
 from pptx.util import Cm, Pt
 
@@ -58,24 +59,24 @@ def export_to_powerpoint(output_filename, plays, library):
     for play in plays:
         slide = presentation.slides.add_slide(presentation.slide_layouts[6])
         text_box = slide.shapes.add_textbox(TITLE_LEFT, TITLE_TOP, TITLE_WIDTH, TITLE_HEIGHT)
-        text_box.text_frame.text = f'{play["Number"]} {play["Hash"]} {play["Dnd"]} {play["Formation"]} {play["Play"]} {play["Defense"]}'
+        text_box.text_frame.text = f'{play["Number"]} {play["Hash"]} {play["Dnd"]} {play["Formation"]} {play["Play"]}'
         text_box.text_frame.paragraphs[0].font.size = Pt(24)
-        if play['Note']:
-            text_box = slide.shapes.add_textbox(TITLE_LEFT, TITLE_TOP + Pt(24) * 2, TITLE_WIDTH, TITLE_HEIGHT)
-            text_box.text_frame.text = f'{play["Note"]}'
-            text_box.text_frame.paragraphs[0].font.size = Pt(24)
+
+        text_box = slide.shapes.add_textbox(TITLE_LEFT, TITLE_TOP + Pt(24) * 2, TITLE_WIDTH, TITLE_HEIGHT)
+        text_box.text_frame.text = f'{play["Defense"]} --- {play["Note"]}'
+        text_box.text_frame.paragraphs[0].font.size = Pt(24)
         add_wide_formation_and_defense_slide(play, slide, library)
 
     # do tight versions after
     for play in plays:
         slide = presentation.slides.add_slide(presentation.slide_layouts[6])
         text_box = slide.shapes.add_textbox(TITLE_LEFT, TITLE_TOP, TITLE_WIDTH, TITLE_HEIGHT)
-        text_box.text_frame.text = f'{play["Number"]} {play["Hash"]} {play["Dnd"]} {play["Formation"]} {play["Play"]} {play["Defense"]}'
+        text_box.text_frame.text = f'{play["Number"]} {play["Hash"]} {play["Dnd"]} {play["Formation"]} {play["Play"]}'
         text_box.text_frame.paragraphs[0].font.size = Pt(24)
-        if play['Note']:
-            text_box = slide.shapes.add_textbox(TITLE_LEFT, TITLE_TOP + Pt(24) * 2, TITLE_WIDTH, TITLE_HEIGHT)
-            text_box.text_frame.text = f'{play["Note"]}'
-            text_box.text_frame.paragraphs[0].font.size = Pt(24)
+
+        text_box = slide.shapes.add_textbox(TITLE_LEFT, TITLE_TOP + Pt(24) * 2, TITLE_WIDTH, TITLE_HEIGHT)
+        text_box.text_frame.text = f'{play["Defense"]} --- {play["Note"]}'
+        text_box.text_frame.paragraphs[0].font.size = Pt(24)
         add_tight_formation_and_defense_slide(play, slide, library)
 
     presentation.save(output_filename)
@@ -116,6 +117,7 @@ def add_wide_formation_and_defense_slide(play, slide, library):
                 shape.text_frame.text = player.label if len(player.label) != 2 else player.label[1]
                 shape.text_frame.paragraphs[0].font.size = Pt(12)
                 shape.text_frame.paragraphs[0].font.color.rgb = RGBColor(0, 0, 0)
+                shape.text_frame.paragraphs[0].alignment = PP_PARAGRAPH_ALIGNMENT.CENTER
 
         if formation and defense_name:
             composite_defense = library.get_composite_defense(defense_name)
@@ -163,6 +165,7 @@ def add_tight_formation_and_defense_slide(play, slide, library):
                 shape.text_frame.text = player.label if len(player.label) != 2 else player.label[1]
                 shape.text_frame.paragraphs[0].font.size = Pt(24)
                 shape.text_frame.paragraphs[0].font.color.rgb = RGBColor(0, 0, 0)
+                shape.text_frame.paragraphs[0].alignment = PP_PARAGRAPH_ALIGNMENT.CENTER
 
         if formation and defense_name:
             composite_defense = library.get_composite_defense(defense_name)
